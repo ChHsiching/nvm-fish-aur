@@ -1,6 +1,6 @@
 # ~/.config/fish/functions/nvm.fish
 # Fish wrapper for nvm using bass with automatic setup
-function nvm
+function nvm --description 'Node Version Manager - Fish shell integration'
   # First run setup and configuration
   __nvm_first_run_setup
   
