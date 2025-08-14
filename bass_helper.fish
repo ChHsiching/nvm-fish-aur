@@ -13,7 +13,9 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     if command -v fisher >/dev/null 2>&1
         echo -e "\033[32m✓\033[0m"
         echo "Installing bass via fisher..."
-        if fisher install edc/bass
+        # Show fisher output
+        fisher install edc/bass
+        if test $status -eq 0
             echo -e "\033[32mBass installed successfully via fisher\033[0m"
             echo "Please restart your fish shell to complete setup"
             return 0
@@ -28,7 +30,9 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     if command -v omf >/dev/null 2>&1
         echo -e "\033[32m✓\033[0m"
         echo "Installing bass via Oh My Fish..."
-        if omf install bass
+        # Show OMF output
+        omf install bass
+        if test $status -eq 0
             echo -e "\033[32mBass installed successfully via OMF\033[0m"
             echo "Please restart your fish shell to complete setup"
             return 0
@@ -43,7 +47,10 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     if functions -q fundle >/dev/null 2>&1
         echo -e "\033[32m✓\033[0m"
         echo "Installing bass via fundle..."
-        if fundle plugin 'edc/bass'; and fundle install
+        # Show fundle output
+        fundle plugin 'edc/bass'
+        fundle install
+        if test $status -eq 0
             echo -e "\033[32mBass installed successfully via fundle\033[0m"
             echo "Please restart your fish shell to complete setup"
             return 0
@@ -60,14 +67,22 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     
     set -l fish_functions_dir "$HOME/.config/fish/functions"
     
-    echo "Downloading bass source code..."
-    if not curl -sL https://github.com/edc/bass/archive/master.tar.gz -o /tmp/bass.tar.gz
+    echo -n "Downloading bass source code... "
+    # Show download with progress
+    if curl -L --progress-bar --fail https://github.com/edc/bass/archive/master.tar.gz -o /tmp/bass.tar.gz
+        echo -e "\033[32m✓\033[0m"
+    else
+        echo -e "\033[31m✗\033[0m"
         echo -e "\033[31mDownload failed\033[0m"
         return 1
     end
     
-    echo "Extracting source..."
-    if not tar -xzf /tmp/bass.tar.gz -C /tmp
+    echo -n "Extracting source... "
+    # Show extraction process
+    if tar -xzf /tmp/bass.tar.gz -C /tmp 2>/dev/null
+        echo -e "\033[32m✓\033[0m"
+    else
+        echo -e "\033[31m✗\033[0m"
         echo -e "\033[31mExtraction failed\033[0m"
         rm -f /tmp/bass.tar.gz
         return 1
