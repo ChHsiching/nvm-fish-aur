@@ -8,6 +8,7 @@ url="https://github.com/nvm-sh/nvm"
 license=('MIT')
 depends=('nvm' 'fish')
 makedepends=()
+install="${pkgname}.install"
 source=("nvm.fish"
         "nvm_find_nvmrc.fish"
         "load_nvm.fish"

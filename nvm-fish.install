@@ -1,0 +1,28 @@
+post_install() {
+    echo "==> nvm-fish has been installed!"
+    echo ""
+    echo "==> Ready to use! No manual configuration needed."
+    echo "==> Simply run 'nvm --version' in Fish shell to get started."
+    echo ""
+    echo "==> First run will automatically:"
+    echo "    - Configure Fish shell integration"
+    echo "    - Set up bass dependency"
+    echo "    - Enable auto-switching with .nvmrc files"
+    echo ""
+    echo "==> Dependencies (automatically managed):"
+    echo "    ✓ nvm (installed as package dependency)"
+    echo "    ✓ bass (auto-detected/installed on first use)"
+}
+
+post_upgrade() {
+    echo "==> nvm-fish has been upgraded!"
+    echo "==> If you experience any issues, you may need to restart your fish shell"
+    echo "==> or re-source your config: source ~/.config/fish/config.fish"
+}
+
+post_remove() {
+    echo "==> nvm-fish has been removed."
+    echo "==> You may want to manually remove the load_nvm line from:"
+    echo "    ~/.config/fish/config.fish"
+    echo "==> if you no longer need nvm integration."
+}
