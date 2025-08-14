@@ -102,6 +102,8 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     if test -f "$extracted_dir/functions/bass.fish"
         # Copy all bass files to user's fish functions directory
         cp "$extracted_dir/functions/"* "$fish_functions_dir/" 2>/dev/null
+        # Load bass into current session so verification passes
+        source "$fish_functions_dir/bass.fish"
         echo "✅ bass successfully installed to your fish environment"
         echo "🔧 bass installed to: $fish_functions_dir"
         echo "💡 bass is now available system-wide in your fish shell"
