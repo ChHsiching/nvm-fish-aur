@@ -40,6 +40,7 @@ post_remove() {
         local user_home="$1"
         local fish_config="$user_home/.config/fish/config.fish"
         local setup_marker="$user_home/.config/nvm-fish-setup-done"
+        local bass_uninstaller="$user_home/.local/bin/uninstall-bass-nvm-fish.sh"
         
         # Only clean if files exist and contain nvm-fish configuration
         if [[ -f "$fish_config" ]] && grep -q "load_nvm\|nvm-fish" "$fish_config" 2>/dev/null; then
@@ -52,6 +53,23 @@ post_remove() {
         if [[ -f "$setup_marker" ]]; then
             echo "    Removing setup marker for user: $(basename "$user_home")"
             rm -f "$setup_marker" 2>/dev/null || true
+        fi
+        
+        # Check for bass installed by nvm-fish
+        if [[ -f "$bass_uninstaller" ]]; then
+            echo ""
+            echo "==> Bass was installed by nvm-fish for user: $(basename "$user_home")"
+            echo ""
+            echo "    To remove bass (if no longer needed):"
+            echo "    $bass_uninstaller"
+            echo ""
+            echo "    Or keep it if you use bass for other purposes."
+            echo ""
+        elif [[ -f "$user_home/.config/fish/functions/bass.fish" ]]; then
+            echo ""
+            echo "==> Bass found for user: $(basename "$user_home")"
+            echo "    (installed independently, not by nvm-fish - left unchanged)"
+            echo ""
         fi
     }
     
@@ -69,11 +87,10 @@ post_remove() {
         done
     fi
     
-    echo ""
     echo "==> Cleanup completed. The following were preserved:"
-    echo "    ✓ Official nvm installation and configuration"
-    echo "    ✓ Existing bass installation (if any)"
+    echo "    ✓ Official nvm installation and configuration"  
     echo "    ✓ All Node.js versions installed via nvm"
+    echo "    ✓ Bass (see above for removal options if needed)"
     echo ""
     echo "==> If you experience any Fish startup errors, run:"
     echo "    sed -i '/load_nvm/d;/nvm-fish/d' ~/.config/fish/config.fish"
