@@ -43,10 +43,12 @@ post_remove() {
         local bass_uninstaller="$user_home/.local/bin/uninstall-bass-nvm-fish.sh"
         
         # Only clean if files exist and contain nvm-fish configuration
-        if [[ -f "$fish_config" ]] && grep -q "load_nvm\|nvm-fish" "$fish_config" 2>/dev/null; then
+        if [[ -f "$fish_config" ]] && grep -q "load_nvm\|nvm-fish\|You must call it on initialization" "$fish_config" 2>/dev/null; then
             echo "    Cleaning Fish config for user: $(basename "$user_home")"
-            # Remove only nvm-fish related lines, preserve other nvm configurations
-            sed -i '/load_nvm/d;/nvm-fish integration/d' "$fish_config" 2>/dev/null || true
+            # Remove all nvm-fish related lines, including comments
+            sed -i '/load_nvm/d;/nvm-fish integration/d;/You must call it on initialization/d' "$fish_config" 2>/dev/null || true
+            # Remove empty lines at the end of file that might be left behind
+            sed -i -e :a -e '/^\s*$/N; s/\n//; ta' "$fish_config" 2>/dev/null || true
         fi
         
         # Remove setup marker
