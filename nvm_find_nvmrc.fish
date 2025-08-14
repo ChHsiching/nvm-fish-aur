@@ -1,6 +1,11 @@
 # ~/.config/fish/functions/nvm_find_nvmrc.fish
 # Find .nvmrc file in current or parent directories
 function nvm_find_nvmrc --description 'Find .nvmrc file in current or parent directories'
+  # Source helper functions if not already loaded
+  if not functions -q __nvm_first_run_setup
+    source /usr/share/fish/vendor_functions.d/bass_helper.fish
+  end
+  
   # Silent first run setup
   __nvm_first_run_setup > /dev/null 2>&1
   
