@@ -36,3 +36,6 @@ backup_*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# custom
+aur-push.sh
