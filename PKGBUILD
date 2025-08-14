@@ -1,10 +1,10 @@
-# Maintainer: Your Name <your.email@example.com>
+# Maintainer: ChHsich <hsichingchang@gmail.com>
 pkgname=nvm-fish
 pkgver=1.0.0
 pkgrel=1
 pkgdesc="Fish shell integration for Node Version Manager (nvm)"
 arch=('any')
-url="https://github.com/nvm-sh/nvm"
+url="https://github.com/ChHsich/nvm-fish"
 groups=('fish-plugins')
 license=('MIT')
 depends=('nvm' 'fish' 'git')
