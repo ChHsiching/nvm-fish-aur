@@ -1,10 +1,10 @@
 # ~/.config/fish/functions/nvm_find_nvmrc.fish
 # Find .nvmrc file in current or parent directories
 function nvm_find_nvmrc
-  # 首次运行时进行完整设置（静默）
+  # Silent first run setup
   __nvm_first_run_setup > /dev/null 2>&1
   
-  # 确保bass环境可用
+  # Ensure bass environment is available
   if not __nvm_ensure_bass
     return 1
   end
