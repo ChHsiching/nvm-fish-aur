@@ -10,32 +10,23 @@ function nvm --description 'Node Version Manager - Fish shell integration'
   
   # Handle 'init' subcommand
   if test "$argv[1]" = "init"
-    echo "🎉 Initializing nvm-fish..."
     __nvm_run_setup
     return $status
   end
   
   # Check if nvm-fish is initialized
   if not __nvm_check_setup
+    echo -e "\033[33mnvm-fish not initialized\033[0m"
     echo ""
-    echo "❌ nvm-fish is not initialized yet."
-    echo ""
-    echo "🔧 Please run the following command first:"
-    echo "    nvm init"
-    echo ""
-    echo "💡 This will:"
-    echo "   - Detect and install bass (if needed)"
-    echo "   - Configure Fish shell integration"
-    echo "   - Enable .nvmrc automatic switching"
+    echo "Run: nvm init"
     echo ""
     return 1
   end
   
   # Ensure bass is available (quick check)
   if not __nvm_ensure_bass_quick
-    echo ""
-    echo "❌ Bass environment not available."
-    echo "🔄 Try running: nvm init"
+    echo -e "\033[31mBass not available\033[0m"
+    echo "Try: nvm init"
     echo ""
     return 1
   end
