@@ -1,0 +1,5 @@
+# nvm-fish development backup files
+*.pkg.tar.zst
+pkg/
+src/
+nvm-official-readme.md
