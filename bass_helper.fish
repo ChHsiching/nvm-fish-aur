@@ -146,6 +146,7 @@ function __nvm_auto_configure_fish --description 'Configure Fish shell for nvm i
     
     # Check if already configured
     if test -f "$fish_config_file" && grep -q "load_nvm" "$fish_config_file"
+        echo "✅ Fish shell integration already configured"
         return 0
     end
     
@@ -154,7 +155,10 @@ function __nvm_auto_configure_fish --description 'Configure Fish shell for nvm i
     # Create fish config directory if it doesn't exist
     mkdir -p "$HOME/.config/fish"
     
-    # Add to config.fish
+    # Clean any previous nvm-fish entries first
+    sed -i '/load_nvm/d;/nvm-fish integration/d' "$fish_config_file" 2>/dev/null || true
+    
+    # Add to config.fish with clear markers
     echo "" >> "$fish_config_file"
     echo "# nvm-fish integration - added automatically" >> "$fish_config_file"
     echo "# You must call it on initialization or directory switching won't work" >> "$fish_config_file"
@@ -162,6 +166,10 @@ function __nvm_auto_configure_fish --description 'Configure Fish shell for nvm i
     
     echo "✅ Fish shell integration configured!"
     echo "💡 The configuration will take effect in new fish sessions"
+    echo ""
+    echo "🗑️  To remove this configuration later:"
+    echo "    sed -i '/load_nvm/d;/nvm-fish/d' ~/.config/fish/config.fish"
+    echo ""
     
     # Load immediately for current session
     load_nvm > /dev/stderr
