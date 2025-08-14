@@ -3,124 +3,175 @@
 [![AUR version](https://img.shields.io/aur/version/nvm-fish?logo=arch-linux&logoColor=white)](https://aur.archlinux.org/packages/nvm-fish)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+*Read this in other languages: [中文](README_zh-CN.md)*
+
 Fish shell integration for Node Version Manager (nvm) on Arch Linux.
 
-## 概述
+## Overview
 
-这个包为 Fish shell 提供了 nvm (Node Version Manager) 的集成支持。它允许你在 Fish shell 中使用 nvm 命令，并支持自动切换 Node.js 版本（通过 .nvmrc 文件）。
+This package provides nvm (Node Version Manager) integration for Fish shell on Arch Linux. It allows you to use nvm commands in Fish shell and supports automatic Node.js version switching via .nvmrc files.
 
-### ✨ 主要特性
+### ✨ Key Features
 
-- 🐟 **完全的 Fish shell 集成**：所有 nvm 命令在 Fish 中正常工作
-- 🎯 **自动版本切换**：支持 .nvmrc 文件，进入目录自动切换 Node 版本
-- 🔧 **智能依赖管理**：自动检测和安装 bass，无需手动配置
-- 📦 **零污染安装**：不破坏用户现有的 Fish 环境配置
-- ⚡ **即开即用**：安装后直接使用，无需任何配置
+- 🐟 **Complete Fish Shell Integration**: All nvm commands work seamlessly in Fish
+- 🎯 **Automatic Version Switching**: Support for .nvmrc files with automatic directory-based switching
+- 🔧 **Intelligent Dependency Management**: Automatic bass detection and installation
+- 📦 **Zero-Pollution Installation**: No disruption to existing Fish environment
+- ⚡ **Ready to Use**: Works immediately after installation, no configuration needed
 
-## 依赖
+## Dependencies
 
-- `nvm` - Node Version Manager（Arch Linux extra 仓库）
+- `nvm` - Node Version Manager (from Arch Linux extra repository)
 - `fish` - Fish shell
-- `bass` - Bash 到 Fish 的转换工具（自动管理，无需手动安装）
+- `bass` - Bash to Fish translation tool (automatically managed)
 
-## 安装
+## Installation
 
-### 从 AUR 安装
+### Install from AUR
 
 ```bash
-# 使用 yay 或其他 AUR helper
+# Using yay or other AUR helper
 yay -S nvm-fish
 
-# 或者手动构建
+# Or build manually
 git clone https://aur.archlinux.org/nvm-fish.git
 cd nvm-fish
 makepkg -si
 ```
 
-### 自动配置
+### Automatic Configuration
 
-安装完成后无需手动配置！第一次使用 nvm 命令时会自动：
-- 检查和配置 bass 环境
-- 设置 Fish shell 集成
-- 添加自动版本切换功能
+No manual configuration needed! The first time you use an nvm command, it will automatically:
+- Check and configure bass environment
+- Set up Fish shell integration
+- Enable automatic version switching
 
-## 快速开始
+## Quick Start
 
-安装完成后，直接在 Fish shell 中使用 nvm：
+After installation, simply use nvm in Fish shell:
 
 ```fish
-# 首次使用会自动配置环境（包括nvm和bass）
+# First use will automatically configure environment (including nvm and bass)
 nvm --version
 
-# 之后就可以正常使用所有nvm功能
+# Then you can use all nvm features normally
 nvm install node
 nvm use node
 ```
 
-**首次使用时自动处理：**
-- ✅ nvm 环境检查和初始化
-- ✅ bass 依赖检测和安装
-- ✅ Fish shell 集成配置
-- ✅ 自动版本切换功能启用
+**Automatically handled on first use:**
+- ✅ nvm environment check and initialization
+- ✅ bass dependency detection and installation
+- ✅ Fish shell integration configuration
+- ✅ Automatic version switching enabled
 
-## 使用方法
+## Usage
 
-安装完成后，直接使用 nvm 命令即可（无需任何配置步骤）：
+After installation, simply use nvm commands directly (no configuration steps needed):
 
 ```fish
-# 检查 nvm 版本（首次使用会自动设置 bass 环境）
+# Check nvm version (first use will automatically set up bass environment)
 nvm --version
 
-# 安装最新的 Node.js
+# Install latest Node.js
 nvm install node
 
-# 安装特定版本
+# Install specific version
 nvm install 18.17.0
 
-# 切换版本
+# Switch version
 nvm use 18
 
-# 设置默认版本
+# Set default version
 nvm alias default 18
 
-# 查看已安装的版本
+# List installed versions
 nvm ls
 
-# 查看可安装的版本
+# List available versions
 nvm ls-remote
 
-# 安装 LTS 版本
+# Install LTS version
 nvm install --lts
 ```
 
-### 自动版本切换
+### Automatic Version Switching
 
-创建 `.nvmrc` 文件来实现自动版本切换：
+Create a `.nvmrc` file for automatic version switching:
 
 ```bash
-# 在项目根目录创建 .nvmrc
+# Create .nvmrc in project root
 echo "18.17.0" > .nvmrc
 
-# 当你进入这个目录时，nvm 会自动切换到指定版本
+# nvm will automatically switch to the specified version when you enter the directory
 cd your-project
 ```
 
-## 工作原理
+## How It Works
 
-这个包提供了四个主要 Fish 函数：
+This package provides four main Fish functions:
 
-1. `nvm` - 使用 bass 调用原始的 bash nvm 命令（自动检测 bass 环境）
-2. `nvm_find_nvmrc` - 查找当前或父目录中的 .nvmrc 文件
-3. `load_nvm` - 当目录改变时自动加载适当的 Node.js 版本
-4. `__nvm_setup_bass` 和相关辅助函数 - 智能 bass 环境管理
+1. `nvm` - Uses bass to call the original bash nvm commands (automatically detects bass environment)
+2. `nvm_find_nvmrc` - Find .nvmrc files in current or parent directories
+3. `load_nvm` - Automatically load appropriate Node.js version when directory changes
+4. `__nvm_setup_bass` and related helper functions - Intelligent bass environment management
 
-### Bass 自动管理
+### Bass Automatic Management
 
-- **检测现有安装**：首先检查 bass 是否已安装
-- **插件管理器支持**：自动检测并使用 fisher、Oh My Fish、fundle
-- **本地回退**：如果没有插件管理器，从 GitHub 下载源码并本地配置
-- **不破坏环境**：本地安装不会影响用户的全局 Fish 配置
+- **Detect Existing Installation**: First checks if bass is already installed
+- **Plugin Manager Support**: Automatically detects and uses fisher, Oh My Fish, fundle
+- **Local Fallback**: Downloads source from GitHub and configures locally if no plugin manager
+- **Environment Protection**: Local installation doesn't affect user's global Fish configuration
 
-## 许可证
+## Troubleshooting
 
-MIT License - 与上游 nvm 项目保持一致。
+### Bass Related Issues
+
+If bass installation fails, you can install it manually:
+
+```fish
+# Install fisher then bass
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
+fisher install jorgebucaran/fisher
+fisher install edc/bass
+
+# Or install Oh My Fish then bass
+curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
+omf install bass
+```
+
+### Function Not Found
+
+If you see "Unknown command" errors:
+
+1. Restart Fish shell: `exec fish`
+2. Or reload configuration: `source ~/.config/fish/config.fish`
+
+### Permission Issues
+
+Make sure you have permissions to install packages. Some AUR helpers may require sudo.
+
+## FAQ
+
+**Q: nvm commands don't work after installation?**
+A: Please restart your Fish shell or run `exec fish`. This is normal Fish behavior.
+
+**Q: Can this coexist with existing bash nvm installation?**
+A: Yes! This package uses the official nvm package as a dependency, so it's fully compatible.
+
+**Q: Automatic version switching doesn't work?**
+A: Make sure load_nvm is added to your config.fish. The package handles this automatically, but if you've manually modified your config file, you may need to re-add it.
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork this repository
+2. Create a feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a Pull Request
+
+## License
+
+MIT License - consistent with the upstream nvm project.
