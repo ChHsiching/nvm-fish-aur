@@ -48,29 +48,30 @@ makepkg -si
 
 ## 快速开始
 
-安装完成后，直接在 Fish shell 中使用 nvm：
+安装完成后，运行一次初始化命令：
 
 ```fish
-# 首次使用会自动配置环境（包括 nvm 和 bass）
-nvm --version
+# 初始化 nvm-fish（安装后运行一次）
+nvm init
 
 # 然后你就可以正常使用所有 nvm 功能
+nvm --version
 nvm install node
 nvm use node
 ```
 
-**首次使用时自动处理：**
-- ✅ nvm 环境检查和初始化
-- ✅ bass 依赖检测和安装
-- ✅ Fish shell 集成配置
-- ✅ 自动版本切换启用
+**`nvm init` 命令会：**
+- ✅ 检测并安装 bass 依赖（通过插件管理器或手动安装）
+- ✅ 自动配置 Fish shell 集成
+- ✅ 启用自动 .nvmrc 版本切换
+- ✅ 设置无缝 nvm 使用所需的一切
 
 ## 使用方法
 
-安装完成后，直接使用 nvm 命令（无需配置步骤）：
+运行 `nvm init` 后，你可以正常使用所有 nvm 命令：
 
 ```fish
-# 检查 nvm 版本（首次使用会自动设置 bass 环境）
+# 检查 nvm 版本
 nvm --version
 
 # 安装最新 Node.js

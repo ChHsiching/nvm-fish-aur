@@ -39,38 +39,39 @@ cd nvm-fish
 makepkg -si
 ```
 
-### Automatic Configuration
+### Simple Initialization
 
-No manual configuration needed! The first time you use an nvm command, it will automatically:
-- Check and configure bass environment
-- Set up Fish shell integration
-- Enable automatic version switching
+One-time setup with `nvm init` command:
+- Detects and installs bass (bash-to-fish adapter) 
+- Sets up Fish shell integration automatically
+- Enables automatic .nvmrc version switching
 
 ## Quick Start
 
-After installation, simply use nvm in Fish shell:
+After installation, initialize nvm-fish once:
 
 ```fish
-# First use will automatically configure environment (including nvm and bass)
-nvm --version
+# Initialize nvm-fish (run once after installation)
+nvm init
 
 # Then you can use all nvm features normally
+nvm --version
 nvm install node
 nvm use node
 ```
 
-**Automatically handled on first use:**
-- ✅ nvm environment check and initialization
-- ✅ bass dependency detection and installation
-- ✅ Fish shell integration configuration
-- ✅ Automatic version switching enabled
+**The `nvm init` command will:**
+- ✅ Detect and install bass dependency (via plugin managers or manual installation)
+- ✅ Configure Fish shell integration automatically
+- ✅ Enable automatic .nvmrc version switching
+- ✅ Set up everything needed for seamless nvm usage
 
 ## Usage
 
-After installation, simply use nvm commands directly (no configuration steps needed):
+After running `nvm init`, you can use all nvm commands normally:
 
 ```fish
-# Check nvm version (first use will automatically set up bass environment)
+# Check nvm version
 nvm --version
 
 # Install latest Node.js
@@ -111,17 +112,19 @@ cd your-project
 
 This package provides four main Fish functions:
 
-1. `nvm` - Uses bass to call the original bash nvm commands (automatically detects bass environment)
+1. `nvm` - Uses bass to call the original bash nvm commands (checks for initialization first)
 2. `nvm_find_nvmrc` - Find .nvmrc files in current or parent directories
 3. `load_nvm` - Automatically load appropriate Node.js version when directory changes
 4. `__nvm_setup_bass` and related helper functions - Intelligent bass environment management
 
-### Bass Automatic Management
+### Bass Intelligent Management
+
+During `nvm init`, the bass dependency is handled intelligently:
 
 - **Detect Existing Installation**: First checks if bass is already installed
-- **Plugin Manager Support**: Automatically detects and uses fisher, Oh My Fish, fundle
-- **Local Fallback**: Downloads source from GitHub and configures locally if no plugin manager
-- **Environment Protection**: Local installation doesn't affect user's global Fish configuration
+- **Plugin Manager Support**: Detects and uses fisher, Oh My Fish, fundle automatically
+- **Manual Installation**: Downloads source from GitHub and installs to user's Fish functions if no plugin manager
+- **Environment Protection**: Manual installation integrates cleanly with Fish's function system
 
 ## Troubleshooting
 
@@ -160,7 +163,7 @@ A: Please restart your Fish shell or run `exec fish`. This is normal Fish behavi
 A: Yes! This package uses the official nvm package as a dependency, so it's fully compatible.
 
 **Q: Automatic version switching doesn't work?**
-A: Make sure load_nvm is added to your config.fish. The package handles this automatically, but if you've manually modified your config file, you may need to re-add it.
+A: Make sure load_nvm is added to your config.fish. Running `nvm init` handles this automatically, but if you've manually modified your config file, you may need to re-add it.
 
 ## Contributing
 

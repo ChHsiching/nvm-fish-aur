@@ -167,15 +167,52 @@ function __nvm_auto_configure_fish --description 'Configure Fish shell for nvm i
     load_nvm > /dev/stderr
 end
 
-# Complete setup for first run
-function __nvm_first_run_setup --description 'First-time setup for nvm-fish'
+# Check if nvm-fish is properly initialized
+function __nvm_check_setup --description 'Check if nvm-fish is initialized'
     set -l setup_marker_file "$HOME/.config/nvm-fish-setup-done"
     
-    # Skip if already set up
-    if test -f "$setup_marker_file"
+    # Check marker file exists
+    if not test -f "$setup_marker_file"
+        return 1
+    end
+    
+    # Quick check if bass is available
+    if command -v bass >/dev/null 2>&1
         return 0
     end
     
+    # Check if bass.fish exists and source it immediately
+    if test -f "$HOME/.config/fish/functions/bass.fish"
+        source "$HOME/.config/fish/functions/bass.fish" 2>/dev/null
+        # After sourcing, consider it available
+        return 0
+    end
+    
+    return 1
+end
+
+# Quick bass availability check (no setup attempt)
+function __nvm_ensure_bass_quick --description 'Quick check if bass is available'
+    # Check if bass command is available
+    if command -v bass >/dev/null 2>&1
+        return 0
+    end
+    
+    # Check if bass.fish exists and source it immediately
+    if test -f "$HOME/.config/fish/functions/bass.fish"
+        source "$HOME/.config/fish/functions/bass.fish" 2>/dev/null
+        # After sourcing, bass should be available - don't rely on command -v again
+        return 0
+    end
+    
+    return 1
+end
+
+# Run complete setup (for nvm init)
+function __nvm_run_setup --description 'Run complete nvm-fish setup'
+    set -l setup_marker_file "$HOME/.config/nvm-fish-setup-done"
+    
+    echo ""
     echo "🎉 Welcome to nvm-fish! Setting up for first use..."
     echo ""
     
@@ -183,7 +220,7 @@ function __nvm_first_run_setup --description 'First-time setup for nvm-fish'
     if not __nvm_ensure_bass
         echo ""
         echo "⚠️  Setup incomplete. Bass environment could not be configured."
-        echo "🔄 You can try running the setup again later with: nvm --version"
+        echo "🔄 You can try running: nvm init"
         return 1
     end
     
@@ -213,31 +250,44 @@ end
 
 # Ensure bass environment is available
 function __nvm_ensure_bass --description 'Ensure bass is available for nvm commands'
-    if not command -v bass >/dev/null 2>&1
-        __nvm_setup_bass
+    # First check if bass command is available
+    if command -v bass >/dev/null 2>&1
+        return 0
     end
     
-    # Final check
-    if not command -v bass >/dev/null 2>&1
-        echo ""
-        echo "❌ Bass environment setup failed. nvm commands cannot proceed."
-        echo ""
-        echo "💡 This may happen if:"
-        echo "   - Network connection failed during bass download"
-        echo "   - No fish plugin manager is installed"
-        echo "   - Fish shell needs to be restarted"
-        echo ""
-        echo "🔧 To resolve:"
-        echo "   1. Restart your fish shell: exec fish"
-        echo "   2. Or install a fish plugin manager first:"
-        echo "      - Fisher: curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
-        echo "      - OMF: curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish"
-        echo ""
-        echo "🗑️  To uninstall bass later, run:"
-        echo "      ~/.local/bin/uninstall-bass-nvm-fish.sh"
-        echo ""
-        return 1
+    # Check if bass.fish file exists (means it's installed)
+    if test -f "$HOME/.config/fish/functions/bass.fish"
+        # Source it to make it available in current session
+        source "$HOME/.config/fish/functions/bass.fish" 2>/dev/null
+        return 0
     end
     
-    return 0
+    # If bass file doesn't exist, try to install it
+    __nvm_setup_bass
+    
+    # Final check - if bass.fish exists after installation, source it
+    if test -f "$HOME/.config/fish/functions/bass.fish"
+        source "$HOME/.config/fish/functions/bass.fish" 2>/dev/null
+        return 0
+    end
+    
+    # Installation failed
+    echo ""
+    echo "❌ Bass environment setup failed. nvm commands cannot proceed."
+    echo ""
+    echo "💡 This may happen if:"
+    echo "   - Network connection failed during bass download"
+    echo "   - No fish plugin manager is installed"
+    echo "   - Fish shell needs to be restarted"
+    echo ""
+    echo "🔧 To resolve:"
+    echo "   1. Restart your fish shell: exec fish"
+    echo "   2. Or install a fish plugin manager first:"
+    echo "      - Fisher: curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
+    echo "      - OMF: curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish"
+    echo ""
+    echo "🗑️  To uninstall bass later, run:"
+    echo "      ~/.local/bin/uninstall-bass-nvm-fish.sh"
+    echo ""
+    return 1
 end

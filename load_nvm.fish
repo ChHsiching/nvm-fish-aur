@@ -2,19 +2,19 @@
 # Automatically load nvm version when PWD changes
 function load_nvm --on-variable="PWD" --description 'Automatically switch Node.js versions based on .nvmrc'
   # Ensure helper functions are available
-  if not functions -q __nvm_ensure_bass
+  if not functions -q __nvm_check_setup
     if test -f /usr/share/fish/vendor_functions.d/bass_helper.fish
       source /usr/share/fish/vendor_functions.d/bass_helper.fish
     end
   end
-  # Silent bass environment check to avoid messages on every directory change
-  if not command -v bass >/dev/null 2>&1
-    # Try to setup bass environment silently
-    __nvm_setup_bass >/dev/null 2>&1
+  
+  # Silent check - exit if not initialized to avoid spam on directory changes
+  if not __nvm_check_setup >/dev/null 2>&1
+    return
   end
   
-  # Exit silently if bass is still not available
-  if not command -v bass >/dev/null 2>&1
+  # Silent bass check - exit if not available
+  if not __nvm_ensure_bass_quick >/dev/null 2>&1
     return
   end
   
