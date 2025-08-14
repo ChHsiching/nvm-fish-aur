@@ -1,6 +1,6 @@
 # bass_helper.fish - Intelligent bass environment management and auto-configuration
 
-function __nvm_setup_bass
+function __nvm_setup_bass --description 'Setup bass environment for nvm integration'
     # Check if bass is already available
     if command -v bass >/dev/null 2>&1
         echo "✅ bass already available"
@@ -69,7 +69,7 @@ function __nvm_setup_bass
 end
 
 # Auto-configure Fish shell integration
-function __nvm_auto_configure_fish
+function __nvm_auto_configure_fish --description 'Configure Fish shell for nvm integration'
     set -l fish_config_file "$HOME/.config/fish/config.fish"
     
     # Check if already configured
@@ -96,7 +96,7 @@ function __nvm_auto_configure_fish
 end
 
 # Complete setup for first run
-function __nvm_first_run_setup
+function __nvm_first_run_setup --description 'First-time setup for nvm-fish'
     set -l setup_marker_file "$HOME/.config/nvm-fish-setup-done"
     
     # Skip if already set up
@@ -134,7 +134,7 @@ function __nvm_first_run_setup
 end
 
 # Ensure bass environment is available
-function __nvm_ensure_bass
+function __nvm_ensure_bass --description 'Ensure bass is available for nvm commands'
     if not command -v bass >/dev/null 2>&1
         __nvm_setup_bass
     end
