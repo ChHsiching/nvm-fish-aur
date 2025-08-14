@@ -1,55 +1,52 @@
 # ~/.config/fish/functions/load_nvm.fish
 # Automatically load nvm version when PWD changes
 function load_nvm --on-variable="PWD" --description 'Automatically switch Node.js versions based on .nvmrc'
-  # Check if this is startup (no previous PWD set) - be silent during startup
+  # Fast startup optimization - only do minimal work during fish startup
   set -l is_startup (not set -q __nvm_fish_pwd_initialized)
   if test -z "$is_startup"
     set -g __nvm_fish_pwd_initialized 1
-    set is_startup true
-  else
-    set is_startup false
-  end
-  # Ensure helper functions are available
-  if not functions -q __nvm_check_setup
-    if test -f /usr/share/fish/vendor_functions.d/bass_helper.fish
-      source /usr/share/fish/vendor_functions.d/bass_helper.fish
-    end
-  end
-  
-  # Silent check - exit if not initialized to avoid spam on directory changes
-  if not __nvm_check_setup >/dev/null 2>&1
+    # On startup, only set the flag and exit immediately
+    # Actual nvm operations will happen on first directory change
     return
   end
   
-  # Silent bass check - exit if not available
-  if not __nvm_ensure_bass_quick >/dev/null 2>&1
+  # Lightweight check - only proceed if nvm-fish is properly set up
+  if not test -f "$HOME/.config/nvm-fish-setup-done"
     return
   end
   
-  set -l default_node_version (nvm version default 2>/dev/null)
-  set -l node_version (nvm version 2>/dev/null)
-  set -l nvmrc_path (nvm_find_nvmrc 2>/dev/null)
-  if test -n "$nvmrc_path"
-    set -l nvmrc_node_version (nvm version (cat $nvmrc_path) 2>/dev/null)
-    if test "$nvmrc_node_version" = "N/A"
-      if test "$is_startup" = "true"
-        nvm install (cat $nvmrc_path) >/dev/null 2>&1
-      else
-        nvm install (cat $nvmrc_path)
-      end
-    else if test "$nvmrc_node_version" != "$node_version"
-      if test "$is_startup" = "true"
-        nvm use $nvmrc_node_version >/dev/null 2>&1
-      else
-        nvm use $nvmrc_node_version
-      end
-    end
-  else if test "$node_version" != "$default_node_version"
-    if test "$is_startup" = "true"
-      # Silent revert during startup
-      nvm use default >/dev/null 2>&1
+  # Quick bass availability check - avoid heavy sourcing on every directory change
+  if not command -v bass >/dev/null 2>&1
+    if test -f "$HOME/.config/fish/functions/bass.fish"
+      source "$HOME/.config/fish/functions/bass.fish" 2>/dev/null
     else
-      # Show message during interactive directory changes
+      return
+    end
+  end
+  
+  # Only check for .nvmrc in current directory (fast file check)
+  set -l nvmrc_path "$PWD/.nvmrc"
+  if test -f "$nvmrc_path"
+    # Only call nvm if there's actually a .nvmrc file
+    set -l nvmrc_content (cat "$nvmrc_path" 2>/dev/null | string trim)
+    if test -n "$nvmrc_content"
+      # Check if we're already using this version (avoid unnecessary nvm calls)
+      set -l current_version_check (node --version 2>/dev/null | string replace 'v' '')
+      set -l target_version (string replace 'v' '' "$nvmrc_content")
+      
+      if test "$current_version_check" != "$target_version"
+        set -l nvmrc_node_version (nvm version "$nvmrc_content" 2>/dev/null)
+        if test "$nvmrc_node_version" = "N/A"
+          nvm install "$nvmrc_content"
+        else
+          nvm use "$nvmrc_content"
+        end
+      end
+    end
+  else
+    # Only revert to default if we're not already on default
+    # This avoids calling nvm on every directory without .nvmrc
+    if test -n "$NVM_BIN" -a "$NVM_BIN" != "$HOME/.nvm/versions/node/$(nvm version default 2>/dev/null)/bin"
       echo "Reverting to default Node version"
       nvm use default
     end
