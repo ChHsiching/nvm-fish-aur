@@ -98,9 +98,9 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     # Create local bass directory structure in user space
     mkdir -p "$local_bass_dir/functions"
     
-    # Copy bass function to our local directory
+    # Copy all bass files to our local directory (including Python support files)
     if test -f "$extracted_dir/functions/bass.fish"
-        cp "$extracted_dir/functions/bass.fish" "$local_bass_dir/functions/"
+        cp "$extracted_dir/functions/"* "$local_bass_dir/functions/" 2>/dev/null
         echo "✅ bass compiled and configured for nvm-fish"
         echo "🔧 bass installed to: $local_bass_dir"
         echo "💡 This local bass will only be used by nvm-fish"
