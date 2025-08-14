@@ -18,6 +18,8 @@ post_install() {
     echo ""
     echo "==> If you don't have a fish plugin manager, nvm-fish will guide you"
     echo "    through the bass installation process."
+    echo ""
+    echo "==> Documentation: https://github.com/your-username/nvm-fish"
 }
 
 post_upgrade() {
@@ -36,4 +38,5 @@ post_remove() {
     echo "    - Remove setup marker: rm ~/.config/nvm-fish-setup-done"
     echo ""
     echo "==> bass will remain installed (in case other tools use it)"
+    echo "==> Thanks for using nvm-fish!"
 }
