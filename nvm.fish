@@ -1,7 +1,7 @@
 # ~/.config/fish/functions/nvm.fish
 # Fish wrapper for nvm using bass with automatic setup
 function nvm --description 'Node Version Manager - Fish shell integration'
-  # Source helper functions if not already loaded
+  # Load helper functions if not already loaded
   if not functions -q __nvm_first_run_setup
     source /usr/share/fish/vendor_functions.d/bass_helper.fish
   end
