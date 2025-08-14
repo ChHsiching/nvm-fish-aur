@@ -115,14 +115,19 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     rm -rf "$extracted_dir" "$temp_dir.tar.gz"
     
     # Add local bass to function path for this package
-    set -gx fish_function_path $fish_function_path $local_bass_dir/functions
+    set -gx fish_function_path $local_bass_dir/functions $fish_function_path
+    
+    # Force reload functions by sourcing bass directly
+    source "$local_bass_dir/functions/bass.fish"
     
     # Verify bass is now available
     if command -v bass >/dev/null 2>&1
         echo "✅ Local bass setup complete and verified"
+        echo "🔧 bass function loaded and ready for nvm commands"
         return 0
     else
         echo "❌ Local bass setup failed verification"
+        echo "🔍 Debug: Function path: $fish_function_path"
         return 1
     end
 end
