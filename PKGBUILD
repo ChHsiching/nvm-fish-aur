@@ -29,6 +29,6 @@ package() {
     install -m644 "${srcdir}/load_nvm.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
     install -m644 "${srcdir}/bass_helper.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
     
-    # 创建bass本地安装目录（用于备选方案）
+    # 创建bass本地编译目录（用于无插件管理器的情况）
     install -d "${pkgdir}/usr/share/nvm-fish/bass/functions"
 }

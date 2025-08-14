@@ -7,65 +7,123 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
         return 0
     end
 
-    echo "🔍 bass not found, attempting automatic installation..."
+    echo "🔍 bass not found, detecting fish plugin managers..."
+    
+    # Show a simple loading animation
+    function __show_loading
+        echo -n "$argv[1]"
+        for i in (seq 3)
+            echo -n "."
+            sleep 0.3
+        end
+        echo ""
+    end
+
+    __show_loading "🔍 Scanning for plugin managers"
 
     # Check for fisher plugin manager
     if command -v fisher >/dev/null 2>&1
-        echo "📦 Detected fisher, installing bass..."
-        if fisher install edc/bass
-            echo "✅ bass installed via fisher"
-            echo "💡 Please restart your fish shell or run: exec fish"
+        echo "📦 Detected fisher plugin manager"
+        __show_loading "📥 Installing bass via fisher"
+        if fisher install edc/bass >/dev/null 2>&1
+            echo "✅ bass successfully installed via fisher"
+            echo "💡 Please restart your fish shell: exec fish"
             return 0
+        else
+            echo "❌ Failed to install bass via fisher"
         end
     end
 
     # Check for Oh My Fish (OMF)
     if command -v omf >/dev/null 2>&1
-        echo "📦 Detected Oh My Fish, installing bass..."
-        if omf install bass
-            echo "✅ bass installed via Oh My Fish"
-            echo "💡 Please restart your fish shell or run: exec fish"
+        echo "📦 Detected Oh My Fish plugin manager"
+        __show_loading "📥 Installing bass via OMF"
+        if omf install bass >/dev/null 2>&1
+            echo "✅ bass successfully installed via Oh My Fish"
+            echo "💡 Please restart your fish shell: exec fish"
             return 0
+        else
+            echo "❌ Failed to install bass via OMF"
         end
     end
 
     # Check for fundle
-    if functions -q fundle
-        echo "📦 Detected fundle, installing bass..."
-        if fundle plugin 'edc/bass'
-            fundle install
-            echo "✅ bass installed via fundle"
-            echo "💡 Please restart your fish shell or run: exec fish"
+    if functions -q fundle >/dev/null 2>&1
+        echo "📦 Detected fundle plugin manager"
+        __show_loading "📥 Installing bass via fundle"
+        if fundle plugin 'edc/bass' >/dev/null 2>&1; and fundle install >/dev/null 2>&1
+            echo "✅ bass successfully installed via fundle"
+            echo "💡 Please restart your fish shell: exec fish"
             return 0
+        else
+            echo "❌ Failed to install bass via fundle"
         end
     end
 
-    # Fallback: local bass installation
-    echo "🛠️  No fish plugin manager found, setting up local bass..."
+    # No plugin manager found - compile bass locally
+    echo "🛠️  No fish plugin manager detected"
+    echo "🔧 Setting up local bass compilation for nvm-fish..."
+    
     set -l local_bass_dir "/usr/share/nvm-fish/bass"
-    set -l temp_dir "/tmp/nvm-fish-bass-$USER"
+    set -l temp_dir "/tmp/nvm-fish-bass-build-$USER"
+    
+    # Clean up any previous attempts
+    rm -rf "$temp_dir" 2>/dev/null
 
-    if test -d "$local_bass_dir"
-        set -gx fish_function_path $fish_function_path $local_bass_dir/functions
-        echo "✅ Using local bass installation"
-        return 0
+    __show_loading "📥 Downloading bass source code"
+    
+    if not curl -sL https://github.com/edc/bass/archive/master.tar.gz -o "$temp_dir.tar.gz" 2>/dev/null
+        echo "❌ Failed to download bass source"
+        return 1
     end
-
-    echo "❌ Unable to automatically install bass"
-    echo ""
-    echo "💡 Please install bass manually using one of these methods:"
-    echo "   1. Install fisher first, then bass:"
-    echo "      curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source"
-    echo "      fisher install jorgebucaran/fisher"
-    echo "      fisher install edc/bass"
-    echo ""
-    echo "   2. Install Oh My Fish, then bass:"
-    echo "      curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish"
-    echo "      omf install bass"
-    echo ""
-    echo "   3. Visit: https://github.com/edc/bass for more installation options"
-    echo ""
-    return 1
+    
+    __show_loading "📦 Extracting bass source"
+    
+    if not tar -xzf "$temp_dir.tar.gz" -C /tmp 2>/dev/null
+        echo "❌ Failed to extract bass source"
+        rm -f "$temp_dir.tar.gz"
+        return 1
+    end
+    
+    # Find the extracted directory (it will be bass-master)
+    set -l extracted_dir "/tmp/bass-master"
+    if not test -d "$extracted_dir"
+        echo "❌ Bass source directory not found"
+        rm -f "$temp_dir.tar.gz"
+        return 1
+    end
+    
+    __show_loading "🔧 Compiling bass for nvm-fish"
+    
+    # Create local bass directory structure
+    mkdir -p "$local_bass_dir/functions"
+    
+    # Copy bass function to our local directory
+    if test -f "$extracted_dir/functions/bass.fish"
+        cp "$extracted_dir/functions/bass.fish" "$local_bass_dir/functions/"
+        echo "✅ bass compiled and configured for nvm-fish"
+        echo "🔧 bass will be available for nvm commands only"
+        echo "💡 This does not affect your global fish environment"
+    else
+        echo "❌ bass.fish not found in source"
+        rm -rf "$extracted_dir" "$temp_dir.tar.gz"
+        return 1
+    end
+    
+    # Clean up
+    rm -rf "$extracted_dir" "$temp_dir.tar.gz"
+    
+    # Add local bass to function path for this package
+    set -gx fish_function_path $fish_function_path $local_bass_dir/functions
+    
+    # Verify bass is now available
+    if command -v bass >/dev/null 2>&1
+        echo "✅ Local bass setup complete and verified"
+        return 0
+    else
+        echo "❌ Local bass setup failed verification"
+        return 1
+    end
 end
 
 # Auto-configure Fish shell integration
@@ -107,10 +165,11 @@ function __nvm_first_run_setup --description 'First-time setup for nvm-fish'
     echo "🎉 Welcome to nvm-fish! Setting up for first use..."
     echo ""
     
-    # Setup bass environment
+    # Setup bass environment with detailed feedback
     if not __nvm_ensure_bass
         echo ""
-        echo "⚠️  Setup incomplete. Please install bass manually and try again."
+        echo "⚠️  Setup incomplete. Bass environment could not be configured."
+        echo "🔄 You can try running the setup again later with: nvm --version"
         return 1
     end
     
@@ -121,13 +180,15 @@ function __nvm_first_run_setup --description 'First-time setup for nvm-fish'
     touch "$setup_marker_file"
     
     echo ""
-    echo "🎯 Setup complete! nvm-fish is ready to use."
-    echo "💡 Features enabled:"
-    echo "   - All nvm commands work in Fish shell"
-    echo "   - Automatic version switching with .nvmrc files"
-    echo "   - Bass dependency automatically managed"
+    echo "🎯 nvm-fish setup complete! You're ready to go."
     echo ""
-    echo "🚀 Try: nvm --version"
+    echo "✨ Features now available:"
+    echo "   - All nvm commands work seamlessly in Fish shell"
+    echo "   - Automatic Node.js version switching with .nvmrc files"  
+    echo "   - Bass dependency intelligently managed"
+    echo ""
+    echo "🚀 Try it out: nvm --version"
+    echo "📚 Documentation: https://github.com/your-username/nvm-fish"
     echo ""
     
     return 0
@@ -141,8 +202,20 @@ function __nvm_ensure_bass --description 'Ensure bass is available for nvm comma
     
     # Final check
     if not command -v bass >/dev/null 2>&1
-        echo "❌ Bass environment not available. nvm commands will not work."
-        echo "💡 Please restart your fish shell after installing bass"
+        echo ""
+        echo "❌ Bass environment setup failed. nvm commands cannot proceed."
+        echo ""
+        echo "💡 This may happen if:"
+        echo "   - Network connection failed during bass download"
+        echo "   - No fish plugin manager is installed"
+        echo "   - Fish shell needs to be restarted"
+        echo ""
+        echo "🔧 To resolve:"
+        echo "   1. Restart your fish shell: exec fish"
+        echo "   2. Or install a fish plugin manager first:"
+        echo "      - Fisher: curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
+        echo "      - OMF: curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish"
+        echo ""
         return 1
     end
     
