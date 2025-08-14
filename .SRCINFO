@@ -5,6 +5,7 @@ pkgbase = nvm-fish
 	url = https://github.com/nvm-sh/nvm
 	install = nvm-fish.install
 	arch = any
+	groups = fish-plugins
 	license = MIT
 	depends = nvm
 	depends = fish
