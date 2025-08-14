@@ -6,7 +6,7 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
         return 0
     end
 
-    echo "Detecting fish plugin managers..."
+    echo "Checking bass installation options..."
     
     # Check plugin managers and show status
     echo -n "  fisher: "
@@ -23,7 +23,7 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
             echo -e "\033[31mFailed to install via fisher\033[0m"
         end
     else
-        echo -e "\033[31m✗\033[0m"
+        echo -e "\033[90m✗\033[0m"
     end
     
     echo -n "  omf: "
@@ -40,7 +40,7 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
             echo -e "\033[31mFailed to install via OMF\033[0m"
         end
     else
-        echo -e "\033[31m✗\033[0m"
+        echo -e "\033[90m✗\033[0m"
     end
     
     echo -n "  fundle: "
@@ -58,12 +58,12 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
             echo -e "\033[31mFailed to install via fundle\033[0m"
         end
     else
-        echo -e "\033[31m✗\033[0m"
+        echo -e "\033[90m✗\033[0m"
     end
 
     # No plugin manager available - compile from source
     echo ""
-    echo "No plugin managers found, compiling bass from source..."
+    echo "No plugin managers detected, will compile bass from source..."
     
     set -l fish_functions_dir "$HOME/.config/fish/functions"
     
