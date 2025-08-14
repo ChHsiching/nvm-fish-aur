@@ -64,7 +64,7 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     echo "🛠️  No fish plugin manager detected"
     echo "🔧 Setting up local bass compilation for nvm-fish..."
     
-    set -l local_bass_dir "/usr/share/nvm-fish/bass"
+    set -l local_bass_dir "$HOME/.local/share/nvm-fish/bass"
     set -l temp_dir "/tmp/nvm-fish-bass-build-$USER"
     
     # Clean up any previous attempts
@@ -95,15 +95,16 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     
     __show_loading "🔧 Compiling bass for nvm-fish"
     
-    # Create local bass directory structure
+    # Create local bass directory structure in user space
     mkdir -p "$local_bass_dir/functions"
     
     # Copy bass function to our local directory
     if test -f "$extracted_dir/functions/bass.fish"
         cp "$extracted_dir/functions/bass.fish" "$local_bass_dir/functions/"
         echo "✅ bass compiled and configured for nvm-fish"
-        echo "🔧 bass will be available for nvm commands only"
-        echo "💡 This does not affect your global fish environment"
+        echo "🔧 bass installed to: $local_bass_dir"
+        echo "💡 This local bass will only be used by nvm-fish"
+        echo "💡 Your global fish environment remains unchanged"
     else
         echo "❌ bass.fish not found in source"
         rm -rf "$extracted_dir" "$temp_dir.tar.gz"
