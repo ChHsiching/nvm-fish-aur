@@ -9,6 +9,7 @@ pkgbase = nvm-fish
 	license = MIT
 	depends = nvm
 	depends = fish
+	depends = git
 	source = nvm.fish
 	source = nvm_find_nvmrc.fish
 	source = load_nvm.fish
