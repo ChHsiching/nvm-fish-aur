@@ -73,7 +73,7 @@ function __nvm_handle_nvmrc_file --description "Handle .nvmrc file creation or o
     __nvm_create_nvmrc "$target_version"
   else
     # .nvmrc exists, ask user what to do
-    set -l existing_version (cat "$PWD/.nvmrc" | string trim)
+    set -l existing_version (string trim < "$PWD/.nvmrc")
     __nvm_prompt_override_nvmrc "$existing_version" "$target_version"
   end
 end
@@ -154,11 +154,11 @@ end
 # Backup existing .nvmrc file
 function __nvm_backup_nvmrc --description "Backup existing .nvmrc file"
   # Create .nvm directory if it doesn't exist
-  if not test -d "$PWD/.nvm"
-    if not mkdir -p "$PWD/.nvm" 2>/dev/null
-      echo -e "\033[31m✗ Failed to create .nvm directory: Permission denied\033[0m"
-      return 1
-    end
+  if test -d "$PWD/.nvm"; or mkdir -p "$PWD/.nvm" 2>/dev/null
+    # Directory exists or was created successfully; continue
+  else
+    echo -e "\033[31m✗ Failed to create .nvm directory: Permission denied\033[0m"
+    return 1
   end
 
   # Generate timestamp backup filename
