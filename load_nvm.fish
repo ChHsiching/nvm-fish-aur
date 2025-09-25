@@ -2,8 +2,7 @@
 # Automatically load nvm version when PWD changes
 function load_nvm --on-variable="PWD" --description 'Automatically switch Node.js versions based on .nvmrc'
   # Fast startup optimization - only do minimal work during fish startup
-  set -l is_startup (not set -q __nvm_fish_pwd_initialized)
-  if test -z "$is_startup"
+  if not set -q __nvm_fish_pwd_initialized
     set -g __nvm_fish_pwd_initialized 1
     # On startup, only set the flag and exit immediately
     # Actual nvm operations will happen on first directory change
