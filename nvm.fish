@@ -44,7 +44,7 @@ function nvm --description 'Node Version Manager - Fish shell integration'
       # Handle .nvmrc file creation/management if we got a valid version
       if test -n "$current_version"
         # Validate that current_version matches semantic versioning (e.g., X.Y.Z)
-        if string match -rq '^[0-9]+\.[0-9]+\.[0-9]+$' -- "$current_version"
+        if string match -rq '^[0-9]+\.[0-9]+\.[0-9]+.*$' -- "$current_version"
           __nvm_handle_nvmrc_file "$current_version"
         else
           echo -e "\033[31m⚠ Warning: Unexpected Node.js version format: '$current_version'\033[0m"
@@ -97,7 +97,7 @@ function __nvm_create_nvmrc --description "Create new .nvmrc file"
       end
       return 0
     case '*'
-      echo -e "\033[33m⚠️  Unrecognized input '$response'. Defaulting to 'Yes'.\033[0m"
+      echo -e "\033[33m⚠  Unrecognized input '$response'. Defaulting to 'Yes'.\033[0m"
       if echo "$version" > "$PWD/.nvmrc" 2>/dev/null
         echo -e "\033[32m✓ Created .nvmrc with version $version\033[0m"
       else
@@ -163,7 +163,6 @@ end
 function __nvm_backup_nvmrc --description "Backup existing .nvmrc file"
   # Create .nvm directory if it doesn't exist
   if test -d "$PWD/.nvm"; or mkdir -p "$PWD/.nvm" 2>/dev/null
-    # Directory exists or was created successfully; continue
   else
     echo -e "\033[31m✗ Failed to create .nvm directory\033[0m"
     return 1
