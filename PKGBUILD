@@ -1,7 +1,7 @@
 # Maintainer: ChHsich <hsichingchang@gmail.com>
 pkgname=nvm-fish
-pkgver=1.0.0
-pkgrel=2
+pkgver=1.1.0
+pkgrel=1
 pkgdesc="Fish shell wrapper for official nvm using bass - enables nvm commands in fish while preserving full compatibility with bash nvm installations"
 arch=('any')
 url="https://github.com/ChHsiching/nvm-fish-aur"
