@@ -36,18 +36,24 @@ function nvm --description 'Node Version Manager - Fish shell integration'
     # Execute nvm use command first
     bass source ~/.nvm/nvm.sh --no-use ';' nvm $argv
 
-    # Get the actual Node.js version after switching
-    set -l current_version (node --version 2>/dev/null | string replace 'v' '')
+    # Check if nvm use command succeeded
+    if test $status -eq 0
+      # Get the actual Node.js version after switching
+      set -l current_version (node --version 2>/dev/null | string replace 'v' '')
 
-    # Handle .nvmrc file creation/management if we got a valid version
-    if test -n "$current_version"
-      # Validate that current_version matches semantic versioning (e.g., X.Y.Z)
-      if string match -rq '^[0-9]+\.[0-9]+\.[0-9]+$' -- "$current_version"
-        __nvm_handle_nvmrc_file "$current_version"
-      else
-        echo -e "\033[31m⚠ Warning: Unexpected Node.js version format: '$current_version'\033[0m"
-        echo -e "\033[31m   Expected format: X.Y.Z (e.g., 18.17.0)\033[0m"
+      # Handle .nvmrc file creation/management if we got a valid version
+      if test -n "$current_version"
+        # Validate that current_version matches semantic versioning (e.g., X.Y.Z)
+        if string match -rq '^[0-9]+\.[0-9]+\.[0-9]+$' -- "$current_version"
+          __nvm_handle_nvmrc_file "$current_version"
+        else
+          echo -e "\033[31m⚠ Warning: Unexpected Node.js version format: '$current_version'\033[0m"
+          echo -e "\033[31m   Expected format: X.Y.Z (e.g., 18.17.0)\033[0m"
+        end
       end
+    else
+      echo -e "\033[31m✗ Failed to switch Node version\033[0m"
+      return 1
     end
 
     # Return to avoid executing the command twice
