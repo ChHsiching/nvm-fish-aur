@@ -41,7 +41,13 @@ function nvm --description 'Node Version Manager - Fish shell integration'
 
     # Handle .nvmrc file creation/management if we got a valid version
     if test -n "$current_version"
-      __nvm_handle_nvmrc_file "$current_version"
+      # Validate that current_version matches semantic versioning (e.g., X.Y.Z)
+      if string match -rq '^[0-9]+\.[0-9]+\.[0-9]+$' -- "$current_version"
+        __nvm_handle_nvmrc_file "$current_version"
+      else
+        echo -e "\033[31m⚠ Warning: Unexpected Node.js version format: '$current_version'\033[0m"
+        echo -e "\033[31m   Expected format: X.Y.Z (e.g., 18.17.0)\033[0m"
+      end
     end
 
     # Return to avoid executing the command twice
@@ -107,10 +113,11 @@ function __nvm_prompt_override_nvmrc --description "Prompt user to override exis
   switch "$response"
     case '2'
       if __nvm_backup_nvmrc
+        # Backup successful, now attempt override
         if echo "$target_version" > "$PWD/.nvmrc" 2>/dev/null
           echo -e "\033[32m✓ Overridden .nvmrc with version $target_version (backup saved)\033[0m"
         else
-          echo -e "\033[31m✗ Failed to override .nvmrc file\033[0m"
+          echo -e "\033[31m✗ Backup succeeded but failed to override .nvmrc file\033[0m"
         end
       else
         # Backup failed, ask if user wants to override without backup
@@ -142,18 +149,23 @@ end
 function __nvm_backup_nvmrc --description "Backup existing .nvmrc file"
   # Create .nvm directory if it doesn't exist
   if not test -d "$PWD/.nvm"
-    mkdir -p "$PWD/.nvm" 2>/dev/null
+    if not mkdir -p "$PWD/.nvm" 2>/dev/null
+      echo -e "\033[31m✗ Failed to create .nvm directory: Permission denied\033[0m"
+      return 1
+    end
   end
 
   # Generate timestamp backup filename
   set -l timestamp (date "+%Y_%m_%d_%H%M%S")
   set -l backup_file "$PWD/.nvm/.nvmrc_$timestamp"
 
-  # Copy existing .nvmrc to backup
+  # Copy existing .nvmrc to backup with better error handling
   if cp "$PWD/.nvmrc" "$backup_file" 2>/dev/null
     return 0
   else
     echo -e "\033[31m✗ Failed to create backup\033[0m"
+    echo -e "\033[33m   Possible causes: permission denied, disk full, or file system read-only\033[0m"
+    echo -e "\033[33m   Backup path: $backup_file\033[0m"
     return 1
   end
 end
