@@ -64,6 +64,19 @@ function nvm --description 'Node Version Manager - Fish shell integration'
   bass source ~/.nvm/nvm.sh --no-use ';' nvm $argv
 end
 
+# Helper function to create .nvmrc file with error handling
+function __nvm_write_nvmrc_file --description "Write version to .nvmrc file with error handling"
+  set -l version "$argv[1]"
+
+  if echo "$version" > "$PWD/.nvmrc" 2>/dev/null
+    echo -e "\033[32m✓ Created .nvmrc with version $version\033[0m"
+    return 0
+  else
+    echo -e "\033[31m✗ Failed to create .nvmrc file\033[0m"
+    return 1
+  end
+end
+
 # Handle .nvmrc file creation/management
 function __nvm_handle_nvmrc_file --description "Handle .nvmrc file creation or override"
   set -l target_version "$argv[1]"
@@ -90,19 +103,11 @@ function __nvm_create_nvmrc --description "Create new .nvmrc file"
     case n N
       return 1
     case "" y Y
-      if echo "$version" > "$PWD/.nvmrc" 2>/dev/null
-        echo -e "\033[32m✓ Created .nvmrc with version $version\033[0m"
-      else
-        echo -e "\033[31m✗ Failed to create .nvmrc file\033[0m"
-      end
+      __nvm_write_nvmrc_file "$version"
       return 0
     case '*'
       echo -e "\033[33m⚠  Unrecognized input '$response'. Defaulting to 'Yes'.\033[0m"
-      if echo "$version" > "$PWD/.nvmrc" 2>/dev/null
-        echo -e "\033[32m✓ Created .nvmrc with version $version\033[0m"
-      else
-        echo -e "\033[31m✗ Failed to create .nvmrc file\033[0m"
-      end
+      __nvm_write_nvmrc_file "$version"
       return 0
   end
 end
@@ -138,7 +143,7 @@ function __nvm_prompt_override_nvmrc --description "Prompt user to override exis
         echo -e "\033[33m⚠ Backup failed, but you can still override.\033[0m"
         echo -e "\033[36m   Override anyway? [y/N] \033[0m"
         read -l backup_fail_response
-        if test "$backup_fail_response" = "y" -o "$backup_fail_response" = "Y"
+        if test "$backup_fail_response" = "y" -or "$backup_fail_response" = "Y"
           if echo "$target_version" > "$PWD/.nvmrc" 2>/dev/null
             echo -e "\033[32m✓ Overridden .nvmrc with version $target_version\033[0m"
           else
@@ -162,10 +167,11 @@ end
 # Backup existing .nvmrc file
 function __nvm_backup_nvmrc --description "Backup existing .nvmrc file"
   # Create .nvm directory if it doesn't exist
-  if test -d "$PWD/.nvm"; or mkdir -p "$PWD/.nvm" 2>/dev/null
-  else
-    echo -e "\033[31m✗ Failed to create .nvm directory\033[0m"
-    return 1
+  if not test -d "$PWD/.nvm"
+    if not mkdir -p "$PWD/.nvm" 2>/dev/null
+      echo -e "\033[31m✗ Failed to create .nvm directory\033[0m"
+      return 1
+    end
   end
 
   # Generate timestamp backup filename
