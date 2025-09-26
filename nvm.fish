@@ -51,9 +51,9 @@ function nvm --description 'Node Version Manager - Fish shell integration'
         # Validate that node_current_version matches semantic versioning (e.g., X.Y.Z)
         if string match -rq '^[0-9]+\.[0-9]+\.[0-9]+.*$' -- "$node_current_version"
           # Only prompt for .nvmrc management if this is a manual user invocation
-          # Check if we're being called from load_nvm (automatic) or directly by user
-          set -l calling_function (status current-function)
-          if test "$calling_function" != "load_nvm"
+          # Check if we're being called automatically (from load_nvm) or directly by user
+          # Use NVM_AUTO environment variable to indicate automatic invocation
+          if not set -q NVM_AUTO
             __nvm_handle_nvmrc_file "$node_current_version"
           end
         else

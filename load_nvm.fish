@@ -45,16 +45,22 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
       set -l target_version (string replace 'v' '' "$nvmrc_content")
 
       # Extract pure version number (remove npm info if present)
-      set -l pure_version (string match -rg '^([0-9]+\.[0-9]+\.[0-9]+)' "$target_version" || echo "$target_version")
+      if string match -rq '^([0-9]+\.[0-9]+\.[0-9]+)' "$target_version"
+        set -l pure_version (string match -rg '^([0-9]+\.[0-9]+\.[0-9]+)' "$target_version")
+      else
+        set -l pure_version "$target_version"
+      end
 
       # Compare using pure version numbers
       if test "$current_version_check" != "$pure_version"
         set -l nvmrc_node_version (nvm version "$pure_version" 2>/dev/null)
         if test "$nvmrc_node_version" = "N/A"
           # Use direct bass call to avoid .nvmrc management prompts
+          set -lx NVM_AUTO 1
           bass source ~/.nvm/nvm.sh --no-use ';' nvm install "$pure_version"
         else
           # Use direct bass call to avoid .nvmrc management prompts
+          set -lx NVM_AUTO 1
           bass source ~/.nvm/nvm.sh --no-use ';' nvm use "$pure_version"
         end
       end
@@ -64,6 +70,7 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
     # This avoids calling nvm on every directory without .nvmrc
     if test -n "$NVM_BIN" -a "$NVM_BIN" != "$HOME/.nvm/versions/node/$(nvm version default 2>/dev/null)/bin"
       # Use direct bass call to avoid .nvmrc management prompts and output
+      set -lx NVM_AUTO 1
       bass source ~/.nvm/nvm.sh --no-use ';' nvm use default
     end
   end
