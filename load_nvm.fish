@@ -36,9 +36,11 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
       if test "$current_version_check" != "$target_version"
         set -l nvmrc_node_version (nvm version "$nvmrc_content" 2>/dev/null)
         if test "$nvmrc_node_version" = "N/A"
-          nvm install "$nvmrc_content"
+          # Use direct bass call to avoid .nvmrc management prompts
+          bass source ~/.nvm/nvm.sh --no-use ';' nvm install "$nvmrc_content"
         else
-          nvm use "$nvmrc_content"
+          # Use direct bass call to avoid .nvmrc management prompts
+          bass source ~/.nvm/nvm.sh --no-use ';' nvm use "$nvmrc_content"
         end
       end
     end
@@ -46,8 +48,8 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
     # Only revert to default if we're not already on default
     # This avoids calling nvm on every directory without .nvmrc
     if test -n "$NVM_BIN" -a "$NVM_BIN" != "$HOME/.nvm/versions/node/$(nvm version default 2>/dev/null)/bin"
-      echo "Reverting to default Node version"
-      nvm use default
+      # Use direct bass call to avoid .nvmrc management prompts and output
+      bass source ~/.nvm/nvm.sh --no-use ';' nvm use default
     end
   end
 end
