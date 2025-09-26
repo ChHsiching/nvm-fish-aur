@@ -7,6 +7,23 @@
 
 Fish shell integration for Node Version Manager (nvm) on Arch Linux.
 
+## 🎉 What's New in v1.1.1
+
+### Critical Bug Fixes
+- ✅ **Fixed version number writing issue**: `.nvmrc` now correctly records the actual Node.js version instead of always writing 4.0.8
+- ✅ **Eliminated automatic prompts**: No more unwanted `.nvmrc` management prompts when switching directories
+- ✅ **Enhanced automatic switching**: Fixed syntax errors when `.nvmrc` contains npm version information
+- ✅ **Improved parent directory support**: Now finds `.nvmrc` files in parent directories recursively
+- ✅ **Optimized performance**: Prevents duplicate `nvm use` calls and reduces unnecessary version switching
+- ✅ **Better user interaction**: Improved terminal input handling and error recovery
+- ✅ **Robust error handling**: Enhanced stty configuration management and fail-safe mechanisms
+
+### Enhanced User Experience
+- 🎯 **Smarter version detection**: Accurately extracts semantic versions from complex nvm output
+- 🚀 **Faster directory navigation**: No delays when entering directories with `.nvmrc` files
+- 🔧 **Intelligent prompts**: Cleaner, more intuitive user interaction flow
+- 📁 **Recursive configuration**: Automatically uses parent `.nvmrc` files in subdirectories
+
 ## Overview
 
 This package provides nvm (Node Version Manager) integration for Fish shell on Arch Linux. It allows you to use nvm commands in Fish shell and supports automatic Node.js version switching via .nvmrc files.
