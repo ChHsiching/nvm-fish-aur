@@ -24,7 +24,7 @@ echo "📁 Test directory: $TEST_ROOT"
 # Test 1: Syntax validation
 echo ""
 echo "📋 Test 1: Syntax validation"
-set -l test_files (*.fish)
+set -l test_files (string match '*.fish' -- *)
 if test (count $test_files) -eq 0
     echo "  ⚠️  No .fish files found to test"
 else
@@ -152,7 +152,7 @@ fish -c "
 
         # Check backup was created
         if test -d .nvm
-            set backup_files (ls .nvm/.nvmrc_* 2>/dev/null | wc -l)
+            set backup_files (count .nvm/.nvmrc_*)
             if test \$backup_files -gt 0
                 echo '  ✅ Backup file created'
             else

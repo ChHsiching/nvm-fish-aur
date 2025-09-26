@@ -28,7 +28,7 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
   set -l current_dir "$PWD"
 
   # Search up the directory tree for .nvmrc
-  while test -z "$nvmrc_path" -a "$current_dir" != "/"
+  while test -z "$nvmrc_path"; and test "$current_dir" != "/"
     if test -f "$current_dir/.nvmrc"
       set nvmrc_path "$current_dir/.nvmrc"
     else
@@ -36,7 +36,7 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
     end
   end
 
-  if test -n "$nvmrc_path" -a -f "$nvmrc_path"
+  if test -n "$nvmrc_path"; and test -f "$nvmrc_path"
     # Only call nvm if there's actually a .nvmrc file
     set -l nvmrc_content (cat "$nvmrc_path" 2>/dev/null | string trim)
     if test -n "$nvmrc_content"
@@ -69,7 +69,7 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
   else
     # Only revert to default if we're not already on default
     # This avoids calling nvm on every directory without .nvmrc
-    if test -n "$NVM_BIN" -a "$NVM_BIN" != "$HOME/.nvm/versions/node/$(nvm version default 2>/dev/null)/bin"
+    if test -n "$NVM_BIN"; and test "$NVM_BIN" != "$HOME/.nvm/versions/node/$(nvm version default 2>/dev/null)/bin"
       # Use direct bass call to avoid .nvmrc management prompts and output
       set -lx NVM_AUTO 1
       bass source ~/.nvm/nvm.sh --no-use ';' nvm use default

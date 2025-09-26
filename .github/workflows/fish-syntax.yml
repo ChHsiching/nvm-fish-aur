@@ -12,7 +12,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        fish-version: [3.6, 3.5, 3.4, 3.3]
 
     steps:
     - name: Checkout code
@@ -22,30 +21,14 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        # Install default fish first
         sudo apt-get install -y fish
-        # Install specific fish versions if needed
-        if [ "${{ matrix.fish-version }}" != "3.6" ]; then
-          # For older versions, we might need to build from source or use PPA
-          echo "Installing Fish ${{ matrix.fish-version }} for Ubuntu"
-          # For now, we'll use the default version and test compatibility
-          fish --version
-        else
-          fish --version
-        fi
+        fish --version
 
     - name: Install Fish shell (macOS)
       if: matrix.os == 'macos-latest'
       run: |
         brew install fish
-        # Switch to specific version if available
-        if brew list --versions | grep -q "fish"; then
-          echo "Fish installed successfully"
-          fish --version
-        else
-          echo "Fish installation failed"
-          exit 1
-        fi
+        fish --version
 
     - name: Verify Fish installation and version
       run: |
