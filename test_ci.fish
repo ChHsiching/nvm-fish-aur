@@ -14,7 +14,9 @@ function cleanup
 end
 
 # Register cleanup
-trap cleanup EXIT
+function __trap_exit --on-event fish_exit
+    cleanup
+end
 
 echo "🧪 Starting nvm-fish CI tests..."
 echo "📁 Test directory: $TEST_ROOT"
@@ -22,14 +24,19 @@ echo "📁 Test directory: $TEST_ROOT"
 # Test 1: Syntax validation
 echo ""
 echo "📋 Test 1: Syntax validation"
-for file in *.fish
-    if test -f "$file"
-        echo "  Checking $file..."
-        if not fish -c "source $file"
-            echo "❌ Syntax error in $file"
-            exit 1
+set -l test_files (*.fish)
+if test (count $test_files) -eq 0
+    echo "  ⚠️  No .fish files found to test"
+else
+    for file in $test_files
+        if test -f "$file"
+            echo "  Checking $file..."
+            if not fish -c "source $file"
+                echo "❌ Syntax error in $file"
+                exit 1
+            end
+            echo "  ✅ $file"
         end
-        echo "  ✅ $file"
     end
 end
 
@@ -67,12 +74,34 @@ cd $TEST_ROOT
 # Test version extraction regex
 fish -c "
     set test_output 'Now using node v18.17.0 (npm v9.6.7)'
-    set version (string match -rg 'Now using node v([0-9]+\\.[0-9]+\\.[0-9]+)' \$test_output)
+    set extracted_version (string match -rg 'Now using node v([0-9]+\.[0-9]+\.[0-9]+)' \$test_output)
 
-    if test \"\$version\" = \"18.17.0\"
+    if test \"\$extracted_version\" = \"18.17.0\"
         echo '  ✅ Version extraction works correctly'
     else
-        echo '  ❌ Version extraction failed: got \"\$version\", expected \"18.17.0\"'
+        echo '  ❌ Version extraction failed: got \"\$extracted_version\", expected \"18.17.0\"'
+        exit 1
+    end
+"
+
+# Test cross-platform compatibility
+echo "  🔄 Testing cross-platform compatibility..."
+fish -c "
+    # Test path handling
+    set test_path '/tmp/test/path'
+    if test (dirname \$test_path) = '/tmp/test'
+        echo '  ✅ Path handling works correctly'
+    else
+        echo '  ❌ Path handling failed'
+        exit 1
+    end
+
+    # Test string operations
+    set test_string 'v18.17.0'
+    if test (string replace 'v' '' \$test_string) = '18.17.0'
+        echo '  ✅ String operations work correctly'
+    else
+        echo '  ❌ String operations failed'
         exit 1
     end
 "

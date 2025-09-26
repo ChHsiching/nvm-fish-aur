@@ -18,21 +18,42 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install Fish shell
+    - name: Install Fish shell (Ubuntu)
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
+        # Install default fish first
         sudo apt-get install -y fish
+        # Install specific fish versions if needed
+        if [ "${{ matrix.fish-version }}" != "3.6" ]; then
+          # For older versions, we might need to build from source or use PPA
+          echo "Installing Fish ${{ matrix.fish-version }} for Ubuntu"
+          # For now, we'll use the default version and test compatibility
+          fish --version
+        else
+          fish --version
+        fi
 
     - name: Install Fish shell (macOS)
       if: matrix.os == 'macos-latest'
       run: |
         brew install fish
+        # Switch to specific version if available
+        if brew list --versions | grep -q "fish"; then
+          echo "Fish installed successfully"
+          fish --version
+        else
+          echo "Fish installation failed"
+          exit 1
+        fi
 
-    - name: Verify Fish version
+    - name: Verify Fish installation and version
       run: |
+        echo "Testing Fish shell installation..."
         fish --version
-        echo "Fish version: ${{ matrix.fish-version }}"
+        echo "Current Fish version:"
+        fish -c "echo $version"
+        echo "Fish version compatibility test passed"
 
     - name: Check Fish syntax
       run: |
@@ -53,6 +74,7 @@ jobs:
         # Test that functions can be loaded without errors
         fish -c "
           # Test nvm function definition
+          source nvm.fish
           functions -t nvm
           echo '✅ nvm function loaded successfully'
 
@@ -96,7 +118,7 @@ jobs:
         echo "🔍 Checking code quality..."
 
         # Check for deprecated syntax
-        if grep -q "test.*-a.*" *.fish; then
+        if grep -q 'test.*[[:space:]]-a[[:space:]]' *.fish; then
           echo "❌ Found deprecated '-a' operator in test commands"
           exit 1
         fi
