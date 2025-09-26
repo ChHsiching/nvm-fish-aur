@@ -45,8 +45,9 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
       set -l target_version (string replace 'v' '' "$nvmrc_content")
 
       # Extract pure version number (remove npm info if present)
-      if string match -rq '^([0-9]+\.[0-9]+\.[0-9]+)' "$target_version"
-        set -l pure_version (string match -rg '^([0-9]+\.[0-9]+\.[0-9]+)' "$target_version")
+      set -l version_regex '^([0-9]+\.[0-9]+\.[0-9]+)'
+      if string match -rq $version_regex "$target_version"
+        set -l pure_version (string match -rg $version_regex "$target_version")
       else
         set -l pure_version "$target_version"
       end
