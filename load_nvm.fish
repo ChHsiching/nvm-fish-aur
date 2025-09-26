@@ -47,7 +47,8 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
       # Extract pure version number (remove npm info if present)
       set -l pure_version (string match -rg '^([0-9]+\.[0-9]+\.[0-9]+)' "$target_version" || echo "$target_version")
 
-      if test "$current_version_check" != "$target_version"
+      # Compare using pure version numbers
+      if test "$current_version_check" != "$pure_version"
         set -l nvmrc_node_version (nvm version "$pure_version" 2>/dev/null)
         if test "$nvmrc_node_version" = "N/A"
           # Use direct bass call to avoid .nvmrc management prompts
