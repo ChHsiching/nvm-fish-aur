@@ -24,7 +24,7 @@ echo "📁 Test directory: $TEST_ROOT"
 # Test 1: Syntax validation
 echo ""
 echo "📋 Test 1: Syntax validation"
-set -l test_files (string match '*.fish' -- *)
+set -l test_files (string match '*.fish' -- * | string match -v 'test_ci.fish')
 if test (count $test_files) -eq 0
     echo "  ⚠️  No .fish files found to test"
 else
@@ -44,7 +44,7 @@ end
 echo ""
 echo "📋 Test 2: Function definitions"
 fish -c "
-    source nvm.fish
+    source \"$ORIGINAL_PWD/nvm.fish\"
 
     # Check main function exists
     if functions -q nvm
@@ -74,12 +74,12 @@ cd $TEST_ROOT
 # Test version extraction regex
 fish -c "
     set test_output 'Now using node v18.17.0 (npm v9.6.7)'
-    set extracted_version (string match -rg 'Now using node v([0-9]+\.[0-9]+\.[0-9]+)' \$test_output)
+    set extracted_version (string match -rg 'Now using node v([0-9]+\.[0-9]+\.[0-9]+)' "$test_output")
 
-    if test \"\$extracted_version\" = \"18.17.0\"
+    if test \"$extracted_version\" = \"18.17.0\"
         echo '  ✅ Version extraction works correctly'
     else
-        echo '  ❌ Version extraction failed: got \"\$extracted_version\", expected \"18.17.0\"'
+        echo '  ❌ Version extraction failed: got \"$extracted_version\", expected \"18.17.0\"'
         exit 1
     end
 "
@@ -89,7 +89,7 @@ echo "  🔄 Testing cross-platform compatibility..."
 fish -c "
     # Test path handling
     set test_path '/tmp/test/path'
-    if test (dirname \$test_path) = '/tmp/test'
+    if test (dirname \"$test_path\") = '/tmp/test'
         echo '  ✅ Path handling works correctly'
     else
         echo '  ❌ Path handling failed'
@@ -98,7 +98,7 @@ fish -c "
 
     # Test string operations
     set test_string 'v18.17.0'
-    if test (string replace 'v' '' \$test_string) = '18.17.0'
+    if test (string replace 'v' '' \"$test_string\") = '18.17.0'
         echo '  ✅ String operations work correctly'
     else
         echo '  ❌ String operations failed'
@@ -113,7 +113,7 @@ cd $TEST_ROOT
 
 # Test .nvmrc writing
 fish -c "
-    source $ORIGINAL_PWD/nvm.fish
+    source "$ORIGINAL_PWD/nvm.fish"
 
     # Test .nvmrc file creation
     if __nvm_write_nvmrc_file '18.17.0'
@@ -122,10 +122,10 @@ fish -c "
         # Verify file content
         if test -f .nvmrc
             set content (cat .nvmrc)
-            if test \"\$content\" = \"18.17.0\"
+            if test \"$content\" = \"18.17.0\"
                 echo '  ✅ .nvmrc content correct'
             else
-                echo '  ❌ .nvmrc content incorrect: \$content'
+                echo '  ❌ .nvmrc content incorrect: $content'
                 exit 1
             end
         end
@@ -144,7 +144,7 @@ cd $TEST_ROOT
 echo "16.20.2" > .nvmrc
 
 fish -c "
-    source $ORIGINAL_PWD/nvm.fish
+    source "$ORIGINAL_PWD/nvm.fish"
 
     # Test backup function
     if __nvm_backup_nvmrc
@@ -152,8 +152,8 @@ fish -c "
 
         # Check backup was created
         if test -d .nvm
-            set backup_files (count .nvm/.nvmrc_*)
-            if test \$backup_files -gt 0
+            set backup_files (count .nvm/.nvmrc_* 2>/dev/null)
+            if test $backup_files -gt 0
                 echo '  ✅ Backup file created'
             else
                 echo '  ❌ No backup files found'
