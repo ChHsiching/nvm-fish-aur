@@ -14,7 +14,6 @@ nvm-official-readme.md
 
 # Test and backup files
 *.backup*
-test_*
 backup_*
 
 # Fish shell cache
@@ -40,3 +39,4 @@ Thumbs.db
 # custom
 aur-push.sh
 CLAUDE.md
+.claude/

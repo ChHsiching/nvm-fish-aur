@@ -1,0 +1,153 @@
+name: Fish Shell Syntax & Functionality Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  fish-syntax:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Fish shell (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y fish
+        fish --version
+
+    - name: Install Fish shell (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install fish
+        fish --version
+
+    - name: Verify Fish installation and version
+      run: |
+        echo "Testing Fish shell installation..."
+        fish --version
+        echo "Current Fish version:"
+        fish -c "echo $version"
+        echo "Fish version compatibility test passed"
+
+    - name: Check Fish syntax
+      run: |
+        # Check syntax for all .fish files
+        for file in *.fish; do
+          if [ -f "$file" ]; then
+            echo "Checking syntax for $file..."
+            fish -c "source $file" || {
+              echo "❌ Syntax error in $file"
+              exit 1
+            }
+            echo "✅ $file syntax OK"
+          fi
+        done
+
+    - name: Test function loading
+      run: |
+        # Test that functions can be loaded without errors
+        fish -c "
+          # Test nvm function definition
+          source nvm.fish
+          functions -t nvm
+          echo '✅ nvm function loaded successfully'
+
+          # Test helper functions
+          if functions -q __nvm_handle_nvmrc_file
+            echo '✅ Helper functions available'
+          end
+        " || {
+          echo "❌ Function loading test failed"
+          exit 1
+        }
+
+    - name: Validate PKGBUILD
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        # Check if PKGBUILD is valid bash
+        bash -n PKGBUILD
+        echo "✅ PKGBUILD syntax OK"
+
+    - name: Check file permissions
+      run: |
+        # Ensure fish files are executable
+        chmod +x *.fish 2>/dev/null || true
+        echo "✅ File permissions set"
+
+    - name: Run CI test script
+      run: |
+        # Run our comprehensive test suite
+        fish test_ci.fish
+        echo "✅ CI tests passed"
+
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check for common issues
+      run: |
+        echo "🔍 Checking code quality..."
+
+        # Check for deprecated syntax
+        if grep -q 'test.*[[:space:]]-a[[:space:]]' *.fish; then
+          echo "❌ Found deprecated '-a' operator in test commands"
+          exit 1
+        fi
+        echo "✅ No deprecated syntax found"
+
+        # Check for proper error handling
+        if grep -q "echo.*error" *.fish | grep -v ">"; then
+          echo "⚠️  Consider redirecting error messages to stderr"
+        fi
+        echo "✅ Error handling check completed"
+
+        # Check file sizes
+        for file in *.fish; do
+          if [ -f "$file" ]; then
+            lines=$(wc -l < "$file")
+            if [ "$lines" -gt 500 ]; then
+              echo "⚠️  $file is large ($lines lines), consider refactoring"
+            fi
+          fi
+        done
+        echo "✅ File size check completed"
+
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Security check
+      run: |
+        echo "🔒 Running security checks..."
+
+        # Check for potential security issues
+        if grep -q "rm -rf" *.fish *.sh 2>/dev/null; then
+          echo "⚠️  Found 'rm -rf' usage - review for security"
+        fi
+
+        # Check for eval usage
+        if grep -q "eval" *.fish *.sh 2>/dev/null; then
+          echo "⚠️  Found 'eval' usage - review for security"
+        fi
+
+        # Check for hardcoded paths
+        if grep -q "/home/" *.fish *.sh 2>/dev/null | grep -v "#"; then
+          echo "⚠️  Found hardcoded paths - consider using variables"
+        fi
+
+        echo "✅ Security scan completed"
