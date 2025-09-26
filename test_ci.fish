@@ -3,7 +3,7 @@
 # CI test script for nvm-fish
 # This script runs automated tests to verify nvm-fish functionality
 
-set -g TEST_ROOT (mktemp -d)
+set -g TEST_ROOT (mktemp -d /tmp/nvm-fish-test.XXXXXX)
 set -g ORIGINAL_PWD $PWD
 
 # Cleanup function
@@ -31,7 +31,7 @@ else
     for file in $test_files
         if test -f "$file"
             echo "  Checking $file..."
-            if not fish -c "source $file"
+            if not fish -c "source \"$file\""
                 echo "❌ Syntax error in $file"
                 exit 1
             end
