@@ -44,7 +44,7 @@ function nvm --description 'Node Version Manager - Fish shell integration'
     # Check if nvm use command succeeded
     if test $status -eq 0
       # Extract version from nvm output (e.g., "Now using node v18.17.0 (npm v9.6.7)")
-      set -l node_current_version (string match -rg 'Now using node v([0-9]+\.[0-9]+\.[0-9]+.*)' "$nvm_output")
+      set -l node_current_version (string match -rg 'Now using node v([0-9]+\.[0-9]+\.[0-9]+)' "$nvm_output")
 
       # Handle .nvmrc file creation/management if we got a valid version
       if test -n "$node_current_version"
@@ -113,8 +113,11 @@ function __nvm_create_nvmrc --description "Create new .nvmrc file"
   echo -e " \033[33m🔎 No .nvmrc file found in current directory.\033[0m"
 
   # Use stty to handle input without read> prompt
-  set -l old_stty (stty -g)
-  stty -icanon -echo
+  if not set -l old_stty (stty -g 2>/dev/null)
+    echo -e " \033[31m⚠ Failed to save terminal settings\033[0m"
+    return 1
+  end
+  stty -icanon -echo 2>/dev/null
 
   echo -n -e "    Would you like to create one with \033[1;36mNode v$node_version\033[0;22m for automatic switching? [Y/n] "
   set -l response (head -c 1)
@@ -151,8 +154,11 @@ function __nvm_prompt_override_nvmrc --description "Prompt user to override exis
   echo -e " \033[36m  3) Override without backup\033[0m"
 
   # Use stty to handle input without read> prompt
-  set -l old_stty (stty -g)
-  stty -icanon -echo
+  if not set -l old_stty (stty -g 2>/dev/null)
+    echo -e " \033[31m⚠ Failed to save terminal settings\033[0m"
+    return 1
+  end
+  stty -icanon -echo 2>/dev/null
 
   echo -n -e " \033[36m   [1/2/3] \033[0m"
   set -l response (head -c 1)
@@ -174,8 +180,11 @@ function __nvm_prompt_override_nvmrc --description "Prompt user to override exis
         echo -e " \033[33m⚠ Backup failed, but you can still override.\033[0m"
 
         # Use stty for second input
-        set -l old_stty2 (stty -g)
-        stty -icanon -echo
+        if not set -l old_stty2 (stty -g 2>/dev/null)
+          echo -e " \033[31m⚠ Failed to save terminal settings\033[0m"
+          return 1
+        end
+        stty -icanon -echo 2>/dev/null
 
         echo -n -e " \033[36m   Override anyway? [y/N] \033[0m"
         set -l backup_fail_response (head -c 1)
