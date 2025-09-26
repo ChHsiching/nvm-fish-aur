@@ -23,9 +23,20 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
     end
   end
   
-  # Only check for .nvmrc in current directory (fast file check)
-  set -l nvmrc_path "$PWD/.nvmrc"
-  if test -f "$nvmrc_path"
+  # Look for .nvmrc in current or parent directories
+  set -l nvmrc_path ""
+  set -l current_dir "$PWD"
+
+  # Search up the directory tree for .nvmrc
+  while test -z "$nvmrc_path" -a "$current_dir" != "/"
+    if test -f "$current_dir/.nvmrc"
+      set nvmrc_path "$current_dir/.nvmrc"
+    else
+      set current_dir (dirname "$current_dir")
+    end
+  end
+
+  if test -n "$nvmrc_path" -a -f "$nvmrc_path"
     # Only call nvm if there's actually a .nvmrc file
     set -l nvmrc_content (cat "$nvmrc_path" 2>/dev/null | string trim)
     if test -n "$nvmrc_content"
