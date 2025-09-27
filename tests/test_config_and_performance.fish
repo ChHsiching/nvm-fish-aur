@@ -366,7 +366,7 @@ fish -c "
     if test \"\$auto_switch\" = \"true\"; and test \"\$cache_enabled\" = \"true\"
         echo '  ✅ Configuration reset creates proper defaults'
     else
-        echo '  ❌ Configuration reset doesn't create proper defaults\"
+        echo '  ❌ Configuration reset doesn'\''t create proper defaults'
         exit 1
     end
 "
