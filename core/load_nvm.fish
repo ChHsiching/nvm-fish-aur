@@ -218,8 +218,16 @@ function __nvm_revert_to_default
         if test -f "$HOME/.nvm/nvm.sh"
             bass source ~/.nvm/nvm.sh --no-use ';' nvm use default
         else if command -v nvm >/dev/null 2>&1
-            # Try to find nvm.sh using nvm command
-            set -l nvm_dir (nvm_dir 2>/dev/null)
+            # Try to find nvm.sh using nvm command or environment variable
+            set -l nvm_dir ""
+            if functions -q nvm_dir
+                set nvm_dir (nvm_dir 2>/dev/null)
+            else if test -n "$NVM_DIR"
+                set nvm_dir "$NVM_DIR"
+            else if test -d "$HOME/.nvm"
+                set nvm_dir "$HOME/.nvm"
+            end
+
             if test -n "$nvm_dir"; and test -f "$nvm_dir/nvm.sh"
                 bass source "$nvm_dir/nvm.sh" --no-use ';' nvm use default
             else

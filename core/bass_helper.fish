@@ -66,7 +66,7 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
     echo "No plugin managers detected, will compile bass from source..."
 
     # Create secure temporary directory with random suffix
-    set -l temp_dir (mktemp -d /tmp/nvm-fish-bass.XXXXXX)
+    set -l temp_dir (mktemp -d /tmp/nvm-fish-bass-$USER.XXXXXX)
     if test $status -ne 0
         echo "Error: Failed to create temporary directory" >&2
         return 1
