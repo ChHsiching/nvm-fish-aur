@@ -7,30 +7,24 @@ arch=('any')
 url="https://github.com/ChHsiching/nvm-fish-aur"
 groups=('fish-plugins')
 license=('MIT')
-depends=('nvm' 'fish' 'git')
+depends=('nvm' 'fish')
 makedepends=()
 install="${pkgname}.install"
-source=("core/nvm.fish"
-        "core/nvm_find_nvmrc.fish"
-        "core/load_nvm.fish"
-        "core/bass_helper.fish"
-        "core/nvm_utils.fish")
-sha256sums=('SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP')
+source=("${pkgname}::git+https://github.com/ChHsiching/nvm-fish-aur.git#tag=v${pkgver}")
+sha256sums=('SKIP')
 
 package() {
+    cd "${srcdir}/${pkgname}"
+
     # Create fish functions directory
     install -d "${pkgdir}/usr/share/fish/vendor_functions.d/"
 
     # Install core fish function files
-    install -m644 "${srcdir}/core/nvm.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
-    install -m644 "${srcdir}/core/nvm_find_nvmrc.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
-    install -m644 "${srcdir}/core/load_nvm.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
-    install -m644 "${srcdir}/core/bass_helper.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
-    install -m644 "${srcdir}/core/nvm_utils.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
+    install -m644 "core/nvm.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
+    install -m644 "core/nvm_find_nvmrc.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
+    install -m644 "core/load_nvm.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
+    install -m644 "core/bass_helper.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
+    install -m644 "core/nvm_utils.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
 
     # Create bass local compilation directory (for cases without plugin manager)
     install -d "${pkgdir}/usr/share/nvm-fish/bass/functions"
