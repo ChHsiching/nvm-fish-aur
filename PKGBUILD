@@ -22,16 +22,16 @@ sha256sums=('SKIP'
             'SKIP')
 
 package() {
-    # 创建fish函数目录
+    # Create fish functions directory
     install -d "${pkgdir}/usr/share/fish/vendor_functions.d/"
 
-    # 安装核心fish函数文件
+    # Install core fish function files
     install -m644 "${srcdir}/core/nvm.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
     install -m644 "${srcdir}/core/nvm_find_nvmrc.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
     install -m644 "${srcdir}/core/load_nvm.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
     install -m644 "${srcdir}/core/bass_helper.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
     install -m644 "${srcdir}/core/nvm_utils.fish" "${pkgdir}/usr/share/fish/vendor_functions.d/"
 
-    # 创建bass本地编译目录（用于无插件管理器的情况）
+    # Create bass local compilation directory (for cases without plugin manager)
     install -d "${pkgdir}/usr/share/nvm-fish/bass/functions"
 }
