@@ -86,7 +86,7 @@ jobs:
     - name: Run CI test script
       run: |
         # Run our comprehensive test suite
-        fish test_ci.fish
+        fish tests/test_ci.fish
         echo "✅ CI tests passed"
 
   code-quality:
