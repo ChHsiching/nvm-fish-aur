@@ -214,7 +214,20 @@ function __nvm_revert_to_default
     # Only revert if not already on default
     if test -n "$NVM_BIN"; and test "$NVM_BIN" != "$default_bin"
         set -lx NVM_AUTO 1
-        bass source ~/.nvm/nvm.sh --no-use ';' nvm use default
+        # Check if nvm.sh exists before sourcing
+        if test -f "$HOME/.nvm/nvm.sh"
+            bass source ~/.nvm/nvm.sh --no-use ';' nvm use default
+        else if command -v nvm >/dev/null 2>&1
+            # Try to find nvm.sh using nvm command
+            set -l nvm_dir (nvm_dir 2>/dev/null)
+            if test -n "$nvm_dir"; and test -f "$nvm_dir/nvm.sh"
+                bass source "$nvm_dir/nvm.sh" --no-use ';' nvm use default
+            else
+                echo "Warning: Could not find nvm.sh, cannot switch to default version" >&2
+            end
+        else
+            echo "Warning: nvm not installed or not in PATH" >&2
+        end
     else
         if functions -q __nvm_is_debug_mode; and __nvm_is_debug_mode
             echo -e " \033[36m📭 No .nvmrc found, staying on current version\033[0m" >&2

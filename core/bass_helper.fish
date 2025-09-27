@@ -213,7 +213,7 @@ function __nvm_run_setup --description 'Run complete nvm-fish setup'
     echo "Initializing nvm-fish..."
     echo ""
 
-    # Setup bass environment
+    # Setup bass using comprehensive setup function
     if not __nvm_setup_bass
         echo -e " \033[31mSetup failed\033[0m"
         return 1

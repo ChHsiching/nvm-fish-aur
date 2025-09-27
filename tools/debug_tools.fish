@@ -2,7 +2,9 @@
 # Debug and performance monitoring tools for nvm-fish
 
 # Load utility functions if available
-if test -f "$HOME/.config/fish/functions/nvm_utils.fish"
+if test -f "/usr/share/fish/vendor_functions.d/nvm_utils.fish"
+    source "/usr/share/fish/vendor_functions.d/nvm_utils.fish"
+else if test -f "$HOME/.config/fish/functions/nvm_utils.fish"
     source "$HOME/.config/fish/functions/nvm_utils.fish"
 end
 
@@ -74,8 +76,15 @@ function __nvm_perf_timer --description "Time execution of a command"
 
     set -l start_time (date +%s%3N)
 
-    # Execute the command safely using fish -c instead of eval
-    fish -c "$command_to_run"
+    # Execute the command safely using eval with proper validation
+    # Only allow whitelisted commands for security
+    if not contains "$first_command" $allowed_commands
+        echo "Error: Command '$first_command' is not allowed for performance timing" >&2
+        return 1
+    end
+
+    # Use eval for better security control with proper validation
+    eval "$command_to_run"
     set -l exit_status $status
 
     set -l end_time (date +%s%3N)

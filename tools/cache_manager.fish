@@ -292,7 +292,7 @@ function __nvm_show_cache_stats --description "Show cache statistics"
     set -l total_requests (math $__nvm_fish_cache_hits + $__nvm_fish_cache_misses)
     set -l hit_rate 0
     if test $total_requests -gt 0
-        set -l hit_rate (math $__nvm_fish_cache_hits \* 100 / $total_requests)
+        set hit_rate (math $__nvm_fish_cache_hits \* 100 / $total_requests)
     end
 
     echo "nvm-fish cache statistics:"
