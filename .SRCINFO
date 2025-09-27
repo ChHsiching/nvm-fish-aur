@@ -10,15 +10,7 @@ pkgbase = nvm-fish
 	depends = nvm
 	depends = fish
 	depends = git
-	source = core/nvm.fish
-	source = core/nvm_find_nvmrc.fish
-	source = core/load_nvm.fish
-	source = core/bass_helper.fish
-	source = core/nvm_utils.fish
-	sha256sums = SKIP
-	sha256sums = SKIP
-	sha256sums = SKIP
-	sha256sums = SKIP
+	source = nvm-fish::git+https://github.com/ChHsiching/nvm-fish-aur.git#branch=main
 	sha256sums = SKIP
 
 pkgname = nvm-fish
