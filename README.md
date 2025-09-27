@@ -7,22 +7,22 @@
 
 Fish shell integration for Node Version Manager (nvm) on Arch Linux.
 
-## 🎉 What's New in v1.1.1
+## 🎉 What's New in v1.1.2
 
-### Critical Bug Fixes
-- ✅ **Fixed version number writing issue**: `.nvmrc` now correctly records the actual Node.js version instead of always writing 4.0.8
-- ✅ **Eliminated automatic prompts**: No more unwanted `.nvmrc` management prompts when switching directories
-- ✅ **Enhanced automatic switching**: Fixed syntax errors when `.nvmrc` contains npm version information
-- ✅ **Improved parent directory support**: Now finds `.nvmrc` files in parent directories recursively
-- ✅ **Optimized performance**: Prevents duplicate `nvm use` calls and reduces unnecessary version switching
-- ✅ **Better user interaction**: Improved terminal input handling and error recovery
-- ✅ **Robust error handling**: Enhanced stty configuration management and fail-safe mechanisms
+### Critical Security and Quality Improvements
+- 🔒 **Enhanced Security**: Fixed temporary directory creation vulnerability with user-specific identifiers
+- 🔧 **Improved Function Reliability**: Added robust fallback mechanisms for nvm_dir function calls
+- 🌍 **Internationalization Support**: Translated all Chinese comments and messages to English for better global compatibility
+- 🐛 **CI/CD Pipeline Fixes**: Corrected GitHub Actions test script paths and configuration
+- 🧪 **Enhanced Testing**: Comprehensive test suite improvements and code quality validation
+- 📝 **Syntax Corrections**: Fixed Fish shell syntax errors and quote escaping issues
+- ⚡ **Performance Optimizations**: Resolved variable scope issues and improved overall code quality
 
-### Enhanced User Experience
-- 🎯 **Smarter version detection**: Accurately extracts semantic versions from complex nvm output
-- 🚀 **Faster directory navigation**: No delays when entering directories with `.nvmrc` files
-- 🔧 **Intelligent prompts**: Cleaner, more intuitive user interaction flow
-- 📁 **Recursive configuration**: Automatically uses parent `.nvmrc` files in subdirectories
+### Technical Improvements
+- 🏗️ **Robust Error Handling**: Enhanced error recovery mechanisms and fail-safe systems
+- 🎯 **Code Quality**: Fixed variable name typos and improved code maintainability
+- 🔄 **Automated Testing**: Improved GitHub Actions workflow with better validation
+- 📊 **Better Coverage**: Extended test coverage for configuration and performance features
 
 ## Overview
 
