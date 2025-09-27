@@ -11,9 +11,16 @@ post_install() {
     echo "    - Detect and install bass (if needed)"
     echo "    - Configure Fish shell integration"
     echo "    - Enable automatic .nvmrc version switching"
+    echo "    - Create configuration system for customization"
     echo ""
     echo "==> Once initialized, all nvm commands work normally:"
     echo "    nvm --version, nvm install node, nvm use 16, etc."
+    echo ""
+    echo "==> Configuration features:"
+    echo "    - Config file: ~/.config/nvm_fish/config.json"
+    echo "    - Disable auto-switch: Set \"auto_switch\": false"
+    echo "    - Performance caching: Enabled by default"
+    echo "    - Debug mode: Available for troubleshooting"
     echo ""
     echo "==> Dependencies:"
     echo "    ✔ nvm (installed as package dependency)"
@@ -25,9 +32,16 @@ post_install() {
 post_upgrade() {
     echo "==> nvm-fish has been upgraded!"
     echo ""
+    echo "==> New features in this release:"
+    echo "    - Configuration system for customization"
+    echo "    - Performance caching for faster directory switching"
+    echo "    - Debug tools for troubleshooting"
+    echo ""
     echo "==> Please restart your fish shell to load the updated functions:"
-    echo "    - Close and reopen your terminal, OR"  
+    echo "    - Close and reopen your terminal, OR"
     echo "    - Run: exec fish"
+    echo ""
+    echo "==> Configuration file location: ~/.config/nvm_fish/config.json"
 }
 
 post_remove() {
@@ -55,6 +69,13 @@ post_remove() {
         if [[ -f "$setup_marker" ]]; then
             echo "    Removing setup marker for user: $(basename "$user_home")"
             rm -f "$setup_marker" 2>/dev/null || true
+        fi
+
+        # Remove nvm-fish configuration directory
+        local nvm_fish_config_dir="$user_home/.config/nvm_fish"
+        if [[ -d "$nvm_fish_config_dir" ]]; then
+            echo "    Removing nvm-fish configuration directory for user: $(basename "$user_home")"
+            rm -rf "$nvm_fish_config_dir" 2>/dev/null || true
         fi
         
         # Check for bass installed by nvm-fish

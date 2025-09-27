@@ -9,12 +9,13 @@ src/
 # Makepkg cache
 *.log
 
-# AUR development files  
-nvm-official-readme.md
+# AUR development files
+*-official-readme.md
 
 # Test and backup files
 *.backup*
 backup_*
+test.nvmrc
 
 # Fish shell cache
 *.tmp
@@ -36,7 +37,9 @@ backup_*
 ehthumbs.db
 Thumbs.db
 
-# custom
-aur-push.sh
+# Development files
 CLAUDE.md
 .claude/
+
+# Package files
+*.pkg.tar.*

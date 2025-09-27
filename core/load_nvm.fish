@@ -1,10 +1,7 @@
 # ~/.config/fish/functions/load_nvm.fish
 # Automatically load nvm version when PWD changes
 
-# Load utility functions if available
-if test -f "$HOME/.config/fish/functions/nvm_utils.fish"
-    source "$HOME/.config/fish/functions/nvm_utils.fish"
-end
+# Note: nvm_utils.fish is now installed as a core function and is always available
 
 function load_nvm --on-variable="PWD" --description 'Automatically switch Node.js versions based on .nvmrc'
     # Fast startup optimization - skip during fish initialization
