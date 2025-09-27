@@ -1,10 +1,15 @@
 # ~/.config/fish/functions/debug_tools.fish
 # Debug and performance monitoring tools for nvm-fish
 
+# Load utility functions if available
+if test -f "$HOME/.config/fish/functions/nvm_utils.fish"
+    source "$HOME/.config/fish/functions/nvm_utils.fish"
+end
+
 # Performance monitoring variables
 set -g __nvm_fish_debug_enabled false
 set -g __nvm_fish_perf_log_enabled false
-set -g __nvm_fish_perf_log_file "$NVM_FISH_CONFIG_DIR/performance.log"
+set -g __nvm_fish_perf_log_file "$HOME/.config/nvm_fish/performance.log"
 
 # Initialize debug system
 function __nvm_init_debug --description "Initialize nvm-fish debug system"
@@ -15,8 +20,8 @@ function __nvm_init_debug --description "Initialize nvm-fish debug system"
     end
 
     # Ensure config directory exists
-    if not test -d "$NVM_FISH_CONFIG_DIR"
-        mkdir -p "$NVM_FISH_CONFIG_DIR" 2>/dev/null
+    if not test -d "$HOME/.config/nvm_fish"
+        mkdir -p "$HOME/.config/nvm_fish" 2>/dev/null
     end
 
     return 0
@@ -31,7 +36,7 @@ function __nvm_debug_log --description "Log debug message if debug mode is enabl
     set -l message "$argv[1]"
     set -l timestamp (date "+%Y-%m-%d %H:%M:%S.%3N")
 
-    echo -e " \\033[35m🔧 [$timestamp] $message\\033[0m" >&2
+    echo -e " \033[35m🔧 [$timestamp] $message\033[0m" >&2
 
     # Also log to performance log if enabled
     if test $__nvm_fish_perf_log_enabled = true
@@ -94,7 +99,7 @@ function __nvm_perf_log --description "Log performance data"
     set -l log_entry "[$timestamp] PERF: $operation took $duration""ms (status: $exit_status)"
 
     if test $__nvm_fish_debug_enabled = true
-        echo -e " \\033[33m⏱️  $log_entry\\033[0m" >&2
+        echo -e " \033[33m⏱️  $log_entry\033[0m" >&2
     end
 
     if test $__nvm_fish_perf_log_enabled = true
@@ -195,41 +200,38 @@ function __nvm_clear_perf_log --description "Clear performance log"
     return 0
 end
 
-# System diagnostics
-function __nvm_system_diagnostics --description "Run system diagnostics"
-    echo "nvm-fish System Diagnostics"
-    echo "==========================="
-
-    # System information
+# System information display
+function __nvm_show_system_info --description "Display system information"
     echo "System Information:"
     echo "  OS: "(uname -s)
     echo "  Architecture: "(uname -m)
     echo "  Fish version: "(fish --version | string split ' ')[-1]
+end
 
-    # nvm information
+# nvm information display
+function __nvm_show_nvm_info --description "Display nvm information"
     if command -v nvm >/dev/null 2>&1
-        echo ""
         echo "nvm Information:"
         echo "  nvm version: "(nvm --version 2>/dev/null || echo "N/A")
         echo "  nvm root: "(nvm root 2>/dev/null || echo "N/A")
         echo "  Current node: "(node --version 2>/dev/null || echo "N/A")
         echo "  Default node: "(nvm version default 2>/dev/null || echo "N/A")
     else
-        echo ""
         echo "nvm: Not installed or not in PATH"
     end
+end
 
-    # bass information
+# bass information display
+function __nvm_show_bass_info --description "Display bass information"
     if command -v bass >/dev/null 2>&1
-        echo ""
         echo "bass: Installed"
     else
-        echo ""
         echo "bass: Not installed or not in PATH"
     end
+end
 
-    # Configuration
-    echo ""
+# Configuration information display
+function __nvm_show_config_info --description "Display configuration information"
     echo "Configuration:"
     if functions -q __nvm_load_config; and __nvm_load_config
         echo "  Auto-switch:     "(functions -q __nvm_get_config; and __nvm_get_config "auto_switch" "N/A" or echo "N/A")
@@ -239,54 +241,53 @@ function __nvm_system_diagnostics --description "Run system diagnostics"
     else
         echo "  Failed to load configuration"
     end
+end
 
-    # Cache statistics
-    echo ""
-    if functions -q __nvm_show_cache_stats
-        __nvm_show_cache_stats
-    else
-        echo "Cache statistics not available"
-    end
-
-    # File system check
-    echo ""
+# File system check
+function __nvm_check_filesystem --description "Check nvm-fish file system"
     echo "File System Check:"
-    echo "  Config directory: $NVM_FISH_CONFIG_DIR"
-    if test -d "$NVM_FISH_CONFIG_DIR"
+    echo "  Config directory: $HOME/.config/nvm_fish"
+    if test -d "$HOME/.config/nvm_fish"
         echo "    Status: Exists"
-        echo "    Permissions: "(ls -ld "$NVM_FISH_CONFIG_DIR" | awk '{print $1}')
-        echo "    Files: "(count (ls -A "$NVM_FISH_CONFIG_DIR" 2>/dev/null))
+        echo "    Permissions: "(ls -ld "$HOME/.config/nvm_fish" | awk '{print $1}')
+        echo "    Files: "(count (ls -A "$HOME/.config/nvm_fish" 2>/dev/null))
     else
         echo "    Status: Does not exist"
     end
 
-    echo "  Config file: $NVM_FISH_CONFIG_FILE"
-    if test -f "$NVM_FISH_CONFIG_FILE"
+    echo "  Config file: $HOME/.config/nvm_fish/config.json"
+    if test -f "$HOME/.config/nvm_fish/config.json"
         echo "    Status: Exists"
-        echo "    Size: "(ls -lh "$NVM_FISH_CONFIG_FILE" | awk '{print $5}')
-        echo "    Modified: "(ls -l "$NVM_FISH_CONFIG_FILE" | awk '{print $6" "$7" "$8}')
+        echo "    Size: "(ls -lh "$HOME/.config/nvm_fish/config.json" | awk '{print $5}')
+        echo "    Modified: "(ls -l "$HOME/.config/nvm_fish/config.json" | awk '{print $6" "$7" "$8}')
     else
         echo "    Status: Does not exist"
     end
 
-    echo "  Cache file: $NVM_FISH_CACHE_FILE"
-    if test -f "$NVM_FISH_CACHE_FILE"
+    echo "  Cache file: $HOME/.config/nvm_fish/directory_cache.fish"
+    if test -f "$HOME/.config/nvm_fish/directory_cache.fish"
         echo "    Status: Exists"
-        echo "    Size: "(ls -lh "$NVM_FISH_CACHE_FILE" | awk '{print $5}')
-        echo "    Modified: "(ls -l "$NVM_FISH_CACHE_FILE" | awk '{print $6" "$7" "$8}')
+        echo "    Size: "(ls -lh "$HOME/.config/nvm_fish/directory_cache.fish" | awk '{print $5}')
+        echo "    Modified: "(ls -l "$HOME/.config/nvm_fish/directory_cache.fish" | awk '{print $6" "$7" "$8}')
     else
         echo "    Status: Does not exist"
     end
+end
 
-    # Performance test
-    echo ""
+# Performance test
+function __nvm_run_performance_test --description "Run performance test"
     echo "Performance Test:"
-    set -l test_dir "/tmp/nvm-fish-test-"(random)
-    mkdir -p "$test_dir"
+
+    # Create temporary directory safely
+    set -l test_dir (__nvm_create_temp_dir "nvm-fish-test")
+    if test $status -ne 0
+        echo "  Error: Failed to create test directory"
+        return 1
+    end
 
     # Test directory search performance
     set -l start_time (date +%s%3N)
-    set -l result (__nvm_find_nvmrc_direct "$test_dir")
+    set -l result (__nvm_find_nvmrc_direct "$test_dir" 2>/dev/null)
     set -l end_time (date +%s%3N)
     set -l search_time (math $end_time - $start_time)
 
@@ -296,14 +297,46 @@ function __nvm_system_diagnostics --description "Run system diagnostics"
     echo "v18.17.0" > "$test_dir/.nvmrc"
 
     set -l start_time (date +%s%3N)
-    set -l result (__nvm_find_nvmrc_direct "$test_dir")
+    set -l result (__nvm_find_nvmrc_direct "$test_dir" 2>/dev/null)
     set -l end_time (date +%s%3N)
     set -l search_time (math $end_time - $start_time)
 
     echo "  Directory search (with .nvmrc): $search_time ms"
 
     # Clean up
-    rm -rf "$test_dir"
+    __nvm_safe_remove "$test_dir"
+end
+
+# System diagnostics (main function)
+function __nvm_system_diagnostics --description "Run system diagnostics"
+    echo "nvm-fish System Diagnostics"
+    echo "==========================="
+
+    __nvm_show_system_info
+    echo ""
+
+    __nvm_show_nvm_info
+    echo ""
+
+    __nvm_show_bass_info
+    echo ""
+
+    __nvm_show_config_info
+    echo ""
+
+    # Cache statistics
+    if functions -q __nvm_show_cache_stats
+        __nvm_show_cache_stats
+    else
+        echo "Cache statistics not available"
+    end
+
+    echo ""
+
+    __nvm_check_filesystem
+    echo ""
+
+    __nvm_run_performance_test
 
     echo ""
     echo "Diagnostics complete"
@@ -339,13 +372,21 @@ function __nvm_debug_shell --description "Start interactive debug shell"
                 echo "  exit          - Exit debug shell"
 
             case config
-                __nvm_show_config
+                __nvm_show_config_info
 
             case cache
-                __nvm_show_cache_stats
+                if functions -q __nvm_show_cache_stats
+                    __nvm_show_cache_stats
+                else
+                    echo "Cache statistics not available"
+                end
 
             case cache-clear
-                __nvm_clear_cache
+                if functions -q __nvm_clear_cache
+                    __nvm_clear_cache
+                else
+                    echo "Cache clearing not available"
+                end
 
             case perf
                 __nvm_show_performance_report
@@ -373,8 +414,8 @@ function __nvm_debug_shell --description "Start interactive debug shell"
             case status
                 echo "Debug mode:      $__nvm_fish_debug_enabled"
                 echo "Perf logging:    $__nvm_fish_perf_log_enabled"
-                echo "Config loaded:   $__nvm_fish_config_loaded"
-                echo "Cache loaded:    $__nvm_fish_cache_loaded"
+                echo "Config loaded:   "$__nvm_fish_config_loaded
+                echo "Cache loaded:    "$__nvm_fish_cache_loaded
 
             case exit quit
                 set debug_running false
