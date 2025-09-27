@@ -7,22 +7,45 @@
 
 Fish shell integration for Node Version Manager (nvm) on Arch Linux.
 
-## 🎉 What's New in v1.1.2
+## 🎉 What's New in v1.2.0
 
-### Critical Security and Quality Improvements
-- 🔒 **Enhanced Security**: Fixed temporary directory creation vulnerability with user-specific identifiers
-- 🔧 **Improved Function Reliability**: Added robust fallback mechanisms for nvm_dir function calls
-- 🌍 **Internationalization Support**: Translated all Chinese comments and messages to English for better global compatibility
-- 🐛 **CI/CD Pipeline Fixes**: Corrected GitHub Actions test script paths and configuration
-- 🧪 **Enhanced Testing**: Comprehensive test suite improvements and code quality validation
-- 📝 **Syntax Corrections**: Fixed Fish shell syntax errors and quote escaping issues
-- ⚡ **Performance Optimizations**: Resolved variable scope issues and improved overall code quality
+### Major Release: Complete Modernization
+
+#### 🌍 Full Internationalization
+- **Complete English Translation**: All Chinese comments and messages translated to English
+- **Global User Experience**: Enhanced international compatibility
+- **Standardized Documentation**: Unified formatting across all documentation
+
+#### 🔒 Security Hardening
+- **Temporary Directory Security**: Fixed vulnerability with user-specific identifiers
+- **Robust Function Calls**: Added multiple fallback mechanisms for nvm_dir functions
+- **Comprehensive Security Audit**: Complete code security review and fixes
+
+#### 🧪 Complete Testing Framework
+- **Full Test Suite**: Added configuration and performance testing coverage
+- **CI/CD Optimization**: Corrected GitHub Actions workflow configuration
+- **Automated Validation**: Enhanced code quality checking processes
+
+#### 📦 Package Structure Redesign
+- **File Organization**: Restructured core/ directory layout
+- **Modular Design**: Separated utility modules from core functionality
+- **Package Management**: Improved AUR package build process
+
+#### ⚡ Code Quality Revolution
+- **Fish Syntax Optimization**: Fixed syntax errors and quote escaping issues
+- **Variable Scope**: Resolved scope and security issues throughout codebase
+- **Performance Enhancement**: Improved code execution efficiency
+
+#### 🔄 Modern AUR Integration
+- **AUR Modernization**: Adopted GitHub as source repository
+- **Simplified Publishing**: Reduced maintenance of duplicate files
+- **Semantic Versioning**: Proper version management
 
 ### Technical Improvements
-- 🏗️ **Robust Error Handling**: Enhanced error recovery mechanisms and fail-safe systems
-- 🎯 **Code Quality**: Fixed variable name typos and improved code maintainability
-- 🔄 **Automated Testing**: Improved GitHub Actions workflow with better validation
-- 📊 **Better Coverage**: Extended test coverage for configuration and performance features
+- 🏗️ **Robust Error Handling**: Enhanced error recovery mechanisms
+- 🎯 **Code Quality**: Fixed variable name issues and improved maintainability
+- 🔄 **Automated Testing**: Better GitHub Actions validation
+- 📊 **Extended Coverage**: Comprehensive test coverage for all features
 
 ## Overview
 

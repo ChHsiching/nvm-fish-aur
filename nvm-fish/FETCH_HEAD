@@ -1,0 +1,18 @@
+cae5953e4da859319b5d0e15b72c06fe443a87f4	not-for-merge	branch 'ci/fish-syntax-check' of https://github.com/ChHsiching/nvm-fish-aur
+6785b3e2e31620dc9bb4d830c9b57c953b428189	not-for-merge	branch 'feat/auto-create-nvmrc-on-use' of https://github.com/ChHsiching/nvm-fish-aur
+3981935f6f4da5665db94fd8c114cefb27d81423	not-for-merge	branch 'feature/config-and-performance-optimization' of https://github.com/ChHsiching/nvm-fish-aur
+8e03165b09eb9148e486a569d11e7af3cf1c8f1d	not-for-merge	branch 'fix/load-nvm-startup-logic' of https://github.com/ChHsiching/nvm-fish-aur
+b04b74f8236c10f7b20e5c846fab3aacc8c62763	not-for-merge	branch 'main' of https://github.com/ChHsiching/nvm-fish-aur
+3a6e588c193e0aaea1382f8cd4f3967ac7033fad	not-for-merge	branch 'release/v1.1.0' of https://github.com/ChHsiching/nvm-fish-aur
+80f5af0af3c4bcb69cc2071a6d83b05d0a624d5b	not-for-merge	branch 'release/v1.1.1' of https://github.com/ChHsiching/nvm-fish-aur
+8e03165b09eb9148e486a569d11e7af3cf1c8f1d	not-for-merge	'refs/pull/1/head' of https://github.com/ChHsiching/nvm-fish-aur
+755d6a389f07324e391f18a3536fb2a6feea814e	not-for-merge	'refs/pull/2/head' of https://github.com/ChHsiching/nvm-fish-aur
+6785b3e2e31620dc9bb4d830c9b57c953b428189	not-for-merge	'refs/pull/3/head' of https://github.com/ChHsiching/nvm-fish-aur
+3a6e588c193e0aaea1382f8cd4f3967ac7033fad	not-for-merge	'refs/pull/4/head' of https://github.com/ChHsiching/nvm-fish-aur
+80b8a38b955ce2ad2fee6fdc9082c023073084e8	not-for-merge	'refs/pull/5/head' of https://github.com/ChHsiching/nvm-fish-aur
+5d290da97f3edae1ca2830028e9c8efbdb3f29dd	not-for-merge	'refs/pull/6/head' of https://github.com/ChHsiching/nvm-fish-aur
+3247a8fbd49dce14b9f483b44161eb26268396bd	not-for-merge	'refs/pull/7/head' of https://github.com/ChHsiching/nvm-fish-aur
+cae5953e4da859319b5d0e15b72c06fe443a87f4	not-for-merge	'refs/pull/8/head' of https://github.com/ChHsiching/nvm-fish-aur
+3981935f6f4da5665db94fd8c114cefb27d81423	not-for-merge	'refs/pull/9/head' of https://github.com/ChHsiching/nvm-fish-aur
+d22f7c885d2736496ad428385003d90fd0b66db6	not-for-merge	tag 'v1.0.0' of https://github.com/ChHsiching/nvm-fish-aur
+eb89721c490a1870a44d8c6c827e25433f3539cf	not-for-merge	tag 'v1.1.1' of https://github.com/ChHsiching/nvm-fish-aur
