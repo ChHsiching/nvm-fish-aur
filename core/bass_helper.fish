@@ -113,17 +113,12 @@ function __nvm_setup_bass --description 'Setup bass environment for nvm integrat
             cp "$bass_extract_dir/functions/"* "$fish_functions_dir/"
             source "$fish_functions_dir/bass.fish"
 
-            # Create uninstall script
-            set -l uninstall_script "$HOME/.local/bin/uninstall-bass-nvm-fish.sh"
-            mkdir -p (dirname "$uninstall_script")
-            echo "#!/bin/bash" > "$uninstall_script"
-            echo "rm -f '$fish_functions_dir/bass.fish' '$fish_functions_dir/__bass.py'" >> "$uninstall_script"
-            echo "rm -f '$uninstall_script'" >> "$uninstall_script"
-            chmod +x "$uninstall_script"
+            # Note: No longer creating uninstall script to reduce file clutter
+            # Users can manually remove bass if needed
 
             echo -e " \033[32mBass compiled and installed successfully\033[0m"
             echo "Installation path: $fish_functions_dir"
-            echo "Uninstall script: $uninstall_script"
+            echo "Note: To remove bass later, manually delete the files from $fish_functions_dir"
         else
             echo -e " \033[31mBass source file appears to be corrupt\033[0m" >&2
             rm -rf "$temp_dir"
@@ -229,31 +224,8 @@ function __nvm_run_setup --description 'Run complete nvm-fish setup'
     # Configure Fish shell integration
     __nvm_auto_configure_fish
 
-    # Initialize configuration system if available
-    if test -f "/usr/share/fish/vendor_functions.d/config_manager.fish"
-        source "/usr/share/fish/vendor_functions.d/config_manager.fish"
-        if functions -q __nvm_init_config
-            __nvm_init_config
-        end
-    else if test -f "$HOME/.config/fish/functions/config_manager.fish"
-        source "$HOME/.config/fish/functions/config_manager.fish"
-        if functions -q __nvm_init_config
-            __nvm_init_config
-        end
-    end
-
-    # Initialize cache system if available
-    if test -f "/usr/share/fish/vendor_functions.d/cache_manager.fish"
-        source "/usr/share/fish/vendor_functions.d/cache_manager.fish"
-        if functions -q __nvm_init_cache
-            __nvm_init_cache
-        end
-    else if test -f "$HOME/.config/fish/functions/cache_manager.fish"
-        source "$HOME/.config/fish/functions/cache_manager.fish"
-        if functions -q __nvm_init_cache
-            __nvm_init_cache
-        end
-    end
+    # Note: Configuration and cache systems are now optional
+    # They will be initialized on-demand when needed, reducing startup overhead
 
     # Create marker file to indicate setup is complete
     touch "$setup_marker_file"
@@ -265,6 +237,8 @@ function __nvm_run_setup --description 'Run complete nvm-fish setup'
     echo "  • All nvm commands work in Fish shell"
     echo "  • Automatic .nvmrc version switching"
     echo "  • Bass integration for bash compatibility"
+    echo ""
+    echo "Optional features (activated on-demand):"
     echo "  • Configuration management system"
     echo "  • Performance caching system"
     echo ""

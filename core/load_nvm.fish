@@ -15,10 +15,21 @@ function load_nvm --on-variable="PWD" --description 'Automatically switch Node.j
         return
     end
 
-    # Load configuration if available
+    # Load configuration if available (on-demand)
     set -l auto_switch_enabled true
     set -l cache_enabled false
 
+    # Try to load configuration system if not already loaded
+    if not functions -q __nvm_get_config
+        # Try vendor functions first
+        if test -f "/usr/share/fish/vendor_functions.d/config_manager.fish"
+            source "/usr/share/fish/vendor_functions.d/config_manager.fish"
+        else if test -f "$HOME/.config/fish/functions/config_manager.fish"
+            source "$HOME/.config/fish/functions/config_manager.fish"
+        end
+    end
+
+    # Use configuration if available
     if functions -q __nvm_get_config
         set auto_switch_enabled (__nvm_get_config "auto_switch" "true")
         set cache_enabled (__nvm_get_config "cache_enabled" "false")
@@ -65,7 +76,18 @@ end
 function __nvm_find_nvmrc_file
     set -l cache_enabled "$argv[1]"
 
-    if test "$cache_enabled" = "true"; and functions -q __nvm_get_cached_nvmrc_path; and functions -q __nvm_find_nvmrc_cached
+    if test "$cache_enabled" = "true"
+        # Try to load cache system if not already loaded
+        if not functions -q __nvm_get_cached_nvmrc_path
+            if test -f "/usr/share/fish/vendor_functions.d/cache_manager.fish"
+                source "/usr/share/fish/vendor_functions.d/cache_manager.fish"
+            else if test -f "$HOME/.config/fish/functions/cache_manager.fish"
+                source "$HOME/.config/fish/functions/cache_manager.fish"
+            end
+        end
+
+        # Use cached lookup if cache system is available
+        if functions -q __nvm_get_cached_nvmrc_path; and functions -q __nvm_find_nvmrc_cached
         # Use cached lookup
         set -l cached_result (__nvm_get_cached_nvmrc_path "$PWD")
         if test -n "$cached_result"
