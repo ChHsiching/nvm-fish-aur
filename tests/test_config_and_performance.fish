@@ -376,7 +376,7 @@ echo ""
 echo "📋 Test 9: Performance comparison"
 
 fish -c "
-    source \"$ORIGINAL_PISH/cache_manager.fish\"
+    source \"$ORIGINAL_PWD/cache_manager.fish\"
     source \"$ORIGINAL_PWD/config_manager.fish\"
 
     # Clear cache for clean test
