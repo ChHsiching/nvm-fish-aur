@@ -7,22 +7,45 @@
 
 Fish shell integration for Node Version Manager (nvm) on Arch Linux.
 
-## 🎉 What's New in v1.1.1
+## 🎉 What's New in v1.2.0
 
-### Critical Bug Fixes
-- ✅ **Fixed version number writing issue**: `.nvmrc` now correctly records the actual Node.js version instead of always writing 4.0.8
-- ✅ **Eliminated automatic prompts**: No more unwanted `.nvmrc` management prompts when switching directories
-- ✅ **Enhanced automatic switching**: Fixed syntax errors when `.nvmrc` contains npm version information
-- ✅ **Improved parent directory support**: Now finds `.nvmrc` files in parent directories recursively
-- ✅ **Optimized performance**: Prevents duplicate `nvm use` calls and reduces unnecessary version switching
-- ✅ **Better user interaction**: Improved terminal input handling and error recovery
-- ✅ **Robust error handling**: Enhanced stty configuration management and fail-safe mechanisms
+### Major Release: Complete Modernization
 
-### Enhanced User Experience
-- 🎯 **Smarter version detection**: Accurately extracts semantic versions from complex nvm output
-- 🚀 **Faster directory navigation**: No delays when entering directories with `.nvmrc` files
-- 🔧 **Intelligent prompts**: Cleaner, more intuitive user interaction flow
-- 📁 **Recursive configuration**: Automatically uses parent `.nvmrc` files in subdirectories
+#### 🌍 Full Internationalization
+- **Complete English Translation**: All Chinese comments and messages translated to English
+- **Global User Experience**: Enhanced international compatibility
+- **Standardized Documentation**: Unified formatting across all documentation
+
+#### 🔒 Security Hardening
+- **Temporary Directory Security**: Fixed vulnerability with user-specific identifiers
+- **Robust Function Calls**: Added multiple fallback mechanisms for nvm_dir functions
+- **Comprehensive Security Audit**: Complete code security review and fixes
+
+#### 🧪 Complete Testing Framework
+- **Full Test Suite**: Added configuration and performance testing coverage
+- **CI/CD Optimization**: Corrected GitHub Actions workflow configuration
+- **Automated Validation**: Enhanced code quality checking processes
+
+#### 📦 Package Structure Redesign
+- **File Organization**: Restructured core/ directory layout
+- **Modular Design**: Separated utility modules from core functionality
+- **Package Management**: Improved AUR package build process
+
+#### ⚡ Code Quality Revolution
+- **Fish Syntax Optimization**: Fixed syntax errors and quote escaping issues
+- **Variable Scope**: Resolved scope and security issues throughout codebase
+- **Performance Enhancement**: Improved code execution efficiency
+
+#### 🔄 Modern AUR Integration
+- **AUR Modernization**: Adopted GitHub as source repository
+- **Simplified Publishing**: Reduced maintenance of duplicate files
+- **Semantic Versioning**: Proper version management
+
+### Technical Improvements
+- 🏗️ **Robust Error Handling**: Enhanced error recovery mechanisms
+- 🎯 **Code Quality**: Fixed variable name issues and improved maintainability
+- 🔄 **Automated Testing**: Better GitHub Actions validation
+- 📊 **Extended Coverage**: Comprehensive test coverage for all features
 
 ## Overview
 
