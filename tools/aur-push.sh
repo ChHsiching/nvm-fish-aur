@@ -1,5 +1,5 @@
 #!/bin/bash
-# AUR submission script - nvm-fish v1.0.0
+# AUR submission script - nvm-fish v1.2.0
 
 set -e
 
@@ -31,7 +31,7 @@ fi
 echo ""
 echo "📦 Package to be submitted:"
 echo "   Name: nvm-fish"
-echo "   Version: 1.0.0-1"
+echo "   Version: 1.2.0-1"
 echo "   Maintainer: ChHsich <hsichingchang@gmail.com>"
 echo ""
 
