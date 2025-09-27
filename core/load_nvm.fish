@@ -217,7 +217,8 @@ function __nvm_revert_to_default
         bass source ~/.nvm/nvm.sh --no-use ';' nvm use default
     else
         if functions -q __nvm_is_debug_mode; and __nvm_is_debug_mode
-            echo -e " \033[36m📭 No .nvmrc found, staying on current version\033[0m" >&2
+            then
+                echo -e " \033[36m📭 No .nvmrc found, staying on current version\033[0m" >&2
         end
     end
 end
