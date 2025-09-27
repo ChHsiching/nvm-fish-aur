@@ -1,9 +1,9 @@
 #!/bin/bash
-# AUR 提交脚本 - nvm-fish v1.0.0
+# AUR submission script - nvm-fish v1.0.0
 
 set -e
 
-echo "🚀 开始提交 nvm-fish 到 AUR..."
+echo "🚀 Starting nvm-fish submission to AUR..."
 echo ""
 
 # 检查是否在正确的目录

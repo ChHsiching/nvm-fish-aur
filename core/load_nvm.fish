@@ -88,15 +88,16 @@ function __nvm_find_nvmrc_file
 
         # Use cached lookup if cache system is available
         if functions -q __nvm_get_cached_nvmrc_path; and functions -q __nvm_find_nvmrc_cached
-        # Use cached lookup
-        set -l cached_result (__nvm_get_cached_nvmrc_path "$PWD")
-        if test -n "$cached_result"
-            if test "$cached_result" = "NO_NVMRC"
-                echo ""
-            else
-                echo "$cached_result"
+            # Use cached lookup
+            set -l cached_result (__nvm_get_cached_nvmrc_path "$PWD")
+            if test -n "$cached_result"
+                if test "$cached_result" = "NO_NVMRC"
+                    echo ""
+                else
+                    echo "$cached_result"
+                end
+                return
             end
-            return
         end
 
         # Perform lookup and cache result

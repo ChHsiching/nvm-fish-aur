@@ -59,7 +59,7 @@ function __nvm_perf_timer --description "Time execution of a command"
     if not contains "$first_command" $allowed_commands
         echo "Error: Command '$first_command' is not allowed for performance timing" >&2
         return 1
-    fi
+    end
 
     # Additional security check: prevent potentially dangerous operations
     if string match -q "*rm*" "$command_to_run"; and string match -q "*-rf*" "$command_to_run"

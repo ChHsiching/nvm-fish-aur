@@ -1,8 +1,8 @@
-# nvm_utils.fish - 通用工具函数模块
-# 提供 nvm-fish 项目中常用的工具函数，减少代码重复
+# nvm_utils.fish - Common utility functions module
+# Provides utility functions for nvm-fish project to reduce code duplication
 
-# 创建安全临时目录
-function __nvm_create_temp_dir --description "创建安全的临时目录"
+# Create secure temporary directory
+function __nvm_create_temp_dir --description "Create secure temporary directory"
     set -l prefix "$argv[1]"
     if test -z "$prefix"
         set prefix "nvm-fish"
@@ -14,13 +14,13 @@ function __nvm_create_temp_dir --description "创建安全的临时目录"
         return 1
     end
 
-    # 设置安全权限
+    # Set secure permissions
     chmod 700 "$temp_dir"
     echo "$temp_dir"
 end
 
-# 安全的目录创建
-function __nvm_ensure_dir --description "确保目录存在，如不存在则创建"
+# Secure directory creation
+function __nvm_ensure_dir --description "Ensure directory exists, create if not"
     set -l dir_path "$argv[1]"
 
     if not test -d "$dir_path"
@@ -34,8 +34,8 @@ function __nvm_ensure_dir --description "确保目录存在，如不存在则创
     return 0
 end
 
-# 检查命令是否可用
-function __nvm_command_exists --description "检查命令是否可用"
+# Check if command is available
+function __nvm_command_exists --description "Check if command is available"
     set -l cmd "$argv[1]"
 
     if command -v "$cmd" >/dev/null 2>&1
@@ -45,8 +45,8 @@ function __nvm_command_exists --description "检查命令是否可用"
     end
 end
 
-# 检查文件是否存在并可读
-function __nvm_file_readable --description "检查文件是否存在并可读"
+# Check if file exists and is readable
+function __nvm_file_readable --description "Check if file exists and is readable"
     set -l file_path "$argv[1]"
 
     if test -f "$file_path"; and test -r "$file_path"
@@ -56,8 +56,8 @@ function __nvm_file_readable --description "检查文件是否存在并可读"
     end
 end
 
-# 标准化的错误处理
-function __nvm_error --description "标准错误输出"
+# Standardized error handling
+function __nvm_error --description "Standard error output"
     set -l message "$argv[1]"
     set -l exit_code "$argv[2]"
 
@@ -69,33 +69,33 @@ function __nvm_error --description "标准错误输出"
     return $exit_code
 end
 
-# 标准化的成功消息
-function __nvm_success --description "标准成功输出"
+# Standardized success message
+function __nvm_success --description "Standard success output"
     set -l message "$argv[1]"
     echo -e "\033[32m✅ $message\033[0m"
 end
 
-# 标准化的警告消息
-function __nvm_warning --description "标准警告输出"
+# Standardized warning message
+function __nvm_warning --description "Standard warning output"
     set -l message "$argv[1]"
     echo -e "\033[33m⚠️  $message\033[0m" >&2
 end
 
-# 标准化的信息消息
-function __nvm_info --description "标准信息输出"
+# Standardized info message
+function __nvm_info --description "Standard info output"
     set -l message "$argv[1]"
     echo -e "\033[36mℹ️  $message\033[0m"
 end
 
-# 安全的文件删除
-function __nvm_safe_remove --description "安全删除文件或目录"
+# Secure file deletion
+function __nvm_safe_remove --description "Safely delete files or directories"
     set -l target "$argv[1]"
 
     if test -z "$target"
         return 1
     end
 
-    # 防止误删重要目录
+    # Prevent accidental deletion of important directories
     if string match -q "$HOME" "$target"
         __nvm_error "Refusing to remove HOME directory"
         return 1
@@ -114,8 +114,8 @@ function __nvm_safe_remove --description "安全删除文件或目录"
     return 0
 end
 
-# 获取文件大小
-function __nvm_file_size --description "获取文件大小（字节）"
+# Get file size
+function __nvm_file_size --description "Get file size in bytes"
     set -l file_path "$argv[1]"
 
     if not __nvm_file_readable "$file_path"
@@ -126,13 +126,13 @@ function __nvm_file_size --description "获取文件大小（字节）"
     stat -c "%s" "$file_path" 2>/dev/null | string trim
 end
 
-# 验证 Node.js 版本号格式
-function __nvm_validate_version --description "验证 Node.js 版本号格式"
+# Validate Node.js version number format
+function __nvm_validate_version --description "Validate Node.js version number format"
     set -l version "$argv[1]"
 
-    # 基本格式验证
+    # Basic format validation
     if not string match -rq '^[0-9]+\.[0-9]+\.[0-9]+$' -- "$version"
-        # 检查是否带有 npm 版本信息
+        # Check if contains npm version info
         if not string match -rq '^[0-9]+\.[0-9]+\.[0-9]+ \(npm v[0-9]+\.[0-9]+\.[0-9]+\)$' -- "$version"
             return 1
         end
@@ -141,14 +141,14 @@ function __nvm_validate_version --description "验证 Node.js 版本号格式"
     return 0
 end
 
-# 安全的字符串转义
-function __nvm_escape_string --description "转义字符串中的特殊字符"
+# Secure string escaping
+function __nvm_escape_string --description "Escape special characters in string"
     set -l str "$argv[1]"
     string escape --style=script -- "$str"
 end
 
-# 检查数组是否包含元素
-function __nvm_contains --description "检查数组是否包含指定元素"
+# Check if array contains element
+function __nvm_contains --description "Check if array contains specified element"
     set -l item "$argv[1]"
     set -l array_name "$argv[2]"
 
@@ -164,25 +164,25 @@ function __nvm_contains --description "检查数组是否包含指定元素"
     end
 end
 
-# 获取配置目录路径
-function __nvm_get_config_dir --description "获取 nvm-fish 配置目录"
+# Get configuration directory path
+function __nvm_get_config_dir --description "Get nvm-fish configuration directory"
     echo "$HOME/.config/nvm_fish"
 end
 
-# 获取配置文件路径
-function __nvm_get_config_file --description "获取 nvm-fish 配置文件路径"
+# Get configuration file path
+function __nvm_get_config_file --description "Get nvm-fish configuration file path"
     set -l config_dir (__nvm_get_config_dir)
     echo "$config_dir/config.json"
 end
 
-# 获取缓存文件路径
-function __nvm_get_cache_file --description "获取 nvm-fish 缓存文件路径"
+# Get cache file path
+function __nvm_get_cache_file --description "Get nvm-fish cache file path"
     set -l config_dir (__nvm_get_config_dir)
     echo "$config_dir/directory_cache.fish"
 end
 
-# 标准化的 HTTP 下载
-function __nvm_download_file --description "安全地下载文件"
+# Standardized HTTP download
+function __nvm_download_file --description "Safely download files"
     set -l url "$argv[1]"
     set -l output "$argv[2]"
 
@@ -191,11 +191,11 @@ function __nvm_download_file --description "安全地下载文件"
         return 1
     end
 
-    # 创建输出目录
+    # Create output directory
     set -l output_dir (dirname "$output")
     __nvm_ensure_dir "$output_dir"
 
-    # 安全的下载选项
+    # Secure download options
     curl -L --fail --max-redirs 3 --max-time 30 \
          --connect-timeout 10 \
          -o "$output" \
@@ -204,14 +204,14 @@ function __nvm_download_file --description "安全地下载文件"
     return $status
 end
 
-# 验证文件完整性（基本检查）
-function __nvm_verify_file --description "验证文件完整性"
+# Verify file integrity (basic check)
+function __nvm_verify_file --description "Verify file integrity"
     set -l file_path "$argv[1]"
     set -l min_size "$argv[2]"
 
     if test -z "$min_size"
         set min_size 1
-    fi
+    end
 
     if not __nvm_file_readable "$file_path"
         return 1
@@ -225,8 +225,8 @@ function __nvm_verify_file --description "验证文件完整性"
     return 0
 end
 
-# 清理函数（用于 trap）
-function __nvm_cleanup --description "清理临时文件和资源"
+# Cleanup function (for trap)
+function __nvm_cleanup --description "Clean up temporary files and resources"
     set -l temp_files "$argv"
 
     for file in $temp_files
