@@ -9,6 +9,7 @@ pkgbase = nvm-fish
 	license = MIT
 	depends = nvm
 	depends = fish
+	depends = git
 	source = nvm-fish::git+https://github.com/ChHsiching/nvm-fish-aur.git#tag=v1.2.0
 	sha256sums = SKIP
 

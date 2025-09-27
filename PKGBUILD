@@ -7,7 +7,7 @@ arch=('any')
 url="https://github.com/ChHsiching/nvm-fish-aur"
 groups=('fish-plugins')
 license=('MIT')
-depends=('nvm' 'fish')
+depends=('nvm' 'fish' 'git')
 makedepends=()
 install="${pkgname}.install"
 source=("${pkgname}::git+https://github.com/ChHsiching/nvm-fish-aur.git#tag=v${pkgver}")
