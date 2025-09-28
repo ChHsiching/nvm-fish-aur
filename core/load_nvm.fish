@@ -58,13 +58,13 @@ end
 
 # Ensure bass is available
 function __nvm_ensure_bass_available
-    if command -v bass >/dev/null 2>&1
+    if functions -q bass
         return 0
     end
 
     if test -f "$HOME/.config/fish/functions/bass.fish"
         source "$HOME/.config/fish/functions/bass.fish" 2>/dev/null
-        if command -v bass >/dev/null 2>&1
+        if functions -q bass
             return 0
         end
     end
