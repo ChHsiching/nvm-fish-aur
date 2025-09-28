@@ -116,21 +116,17 @@ function __nvm_find_nvmrc_file
     end
 
     # Direct lookup without caching
-    if functions -q __nvm_find_nvmrc_direct
-        __nvm_find_nvmrc_direct "$PWD"
-    else
-        # Simple directory search
-        set -l current_dir "$PWD"
-        set -l nvmrc_path ""
-        while test -z "$nvmrc_path"; and test "$current_dir" != "/"
-            if test -f "$current_dir/.nvmrc"
-                set nvmrc_path "$current_dir/.nvmrc"
-            else
-                set current_dir (dirname "$current_dir")
-            end
+    # Simple directory search
+    set -l current_dir "$PWD"
+    set -l nvmrc_path ""
+    while test -z "$nvmrc_path"; and test "$current_dir" != "/"
+        if test -f "$current_dir/.nvmrc"
+            set nvmrc_path "$current_dir/.nvmrc"
+        else
+            set current_dir (dirname "$current_dir")
         end
-        echo "$nvmrc_path"
     end
+    echo "$nvmrc_path"
 end
 
 # Process .nvmrc file and switch version
@@ -147,7 +143,11 @@ function __nvm_process_nvmrc
     set -l pure_version (__nvm_extract_pure_version "$target_version")
 
     # Check if already on correct version
-    set -l current_version (node --version 2>/dev/null | string replace 'v' '')
+    set -l current_version ""
+    if command -v node >/dev/null 2>&1
+        set current_version (node --version 2>/dev/null | string replace 'v' '')
+    end
+
     if test "$current_version" = "$pure_version"
         if functions -q __nvm_is_debug_mode; and __nvm_is_debug_mode
             echo -e " \033[36m💨 Already on correct version: $pure_version\033[0m" >&2
@@ -176,8 +176,12 @@ function __nvm_switch_to_version
     set -l version "$argv[1]"
 
     # Check if version is installed
-    set -l installed_version (nvm version "$version" 2>/dev/null)
-    if test "$installed_version" = "N/A"
+    set -l installed_version ""
+    if command -v nvm >/dev/null 2>&1
+        set installed_version (nvm version "$version" 2>/dev/null)
+    end
+
+    if test "$installed_version" = "N/A"; or test -z "$installed_version"
         # Install version
         __nvm_install_version "$version"
     else
